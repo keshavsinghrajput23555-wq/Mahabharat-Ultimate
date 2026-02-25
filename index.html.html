@@ -1,0 +1,2282 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>महाभारत - The Epic Game</title>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Sanskrit:ital@0;1&family=Cinzel+Decorative:wght@400;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #D4A017;
+    --gold-light: #F5C842;
+    --gold-dark: #8B6914;
+    --crimson: #8B0000;
+    --crimson-light: #C41E3A;
+    --deep-blue: #0A0A1A;
+    --midnight: #050510;
+    --parchment: #F5E6C8;
+    --orange: #E07B39;
+    --teal: #1A7A6E;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--midnight);
+    color: var(--parchment);
+    font-family: 'Crimson Pro', serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* Stars background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 20% 30%, rgba(255,255,220,0.8) 0%, transparent 100%),
+      radial-gradient(1px 1px at 40% 70%, rgba(255,255,220,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 20%, rgba(255,255,220,0.9) 0%, transparent 100%),
+      radial-gradient(1px 1px at 80% 50%, rgba(255,255,220,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 15% 80%, rgba(255,255,220,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 60%, rgba(255,255,220,0.8) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 10%, rgba(255,255,220,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 35% 45%, rgba(255,255,220,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 85%, rgba(255,255,220,0.5) 0%, transparent 100%),
+      radial-gradient(2px 2px at 25% 55%, rgba(255,200,100,0.4) 0%, transparent 100%),
+      radial-gradient(2px 2px at 75% 35%, rgba(255,200,100,0.4) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Screen management */
+  .screen { display: none; position: relative; z-index: 1; }
+  .screen.active { display: block; }
+
+  /* ===== TITLE SCREEN ===== */
+  #title-screen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(212,160,23,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse at 50% 100%, rgba(139,0,0,0.2) 0%, transparent 60%);
+  }
+
+  .title-om {
+    font-size: 5rem;
+    color: var(--gold);
+    text-shadow: 0 0 40px rgba(212,160,23,0.8), 0 0 80px rgba(212,160,23,0.4);
+    animation: pulse-glow 3s ease-in-out infinite;
+    margin-bottom: 1rem;
+    font-family: 'Tiro Devanagari Sanskrit', serif;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { text-shadow: 0 0 40px rgba(212,160,23,0.8), 0 0 80px rgba(212,160,23,0.4); }
+    50% { text-shadow: 0 0 60px rgba(212,160,23,1), 0 0 120px rgba(212,160,23,0.6), 0 0 200px rgba(212,160,23,0.2); }
+  }
+
+  .title-main {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, #F5C842, #D4A017, #8B6914, #D4A017, #F5C842);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 4s ease infinite;
+    letter-spacing: 0.05em;
+    line-height: 1.1;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .title-sub {
+    font-family: 'Tiro Devanagari Sanskrit', serif;
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    color: var(--gold-light);
+    margin: 0.5rem 0 2rem;
+    opacity: 0.9;
+    letter-spacing: 0.1em;
+  }
+
+  .title-divider {
+    width: 300px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 1.5rem auto;
+  }
+
+  .title-desc {
+    max-width: 600px;
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: rgba(245,230,200,0.85);
+    margin-bottom: 3rem;
+    font-style: italic;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-dark));
+    color: var(--midnight);
+    border: none;
+    padding: 1rem 3rem;
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent, rgba(255,255,255,0.3), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+  }
+
+  .btn-primary:hover::before { transform: translateX(100%); }
+  .btn-primary:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(212,160,23,0.5); }
+
+  .char-preview {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 2rem 0;
+  }
+
+  .char-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    background: rgba(212,160,23,0.1);
+    animation: float 3s ease-in-out infinite;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .char-icon:nth-child(2) { animation-delay: 0.5s; }
+  .char-icon:nth-child(3) { animation-delay: 1s; }
+  .char-icon:nth-child(4) { animation-delay: 1.5s; }
+  .char-icon:nth-child(5) { animation-delay: 2s; }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .char-icon:hover { border-color: var(--gold-light); box-shadow: 0 0 20px rgba(212,160,23,0.5); transform: scale(1.1) translateY(-4px); }
+
+  /* ===== CHAPTER SELECT ===== */
+  #chapter-screen {
+    min-height: 100vh;
+    padding: 2rem;
+    background:
+      radial-gradient(ellipse at 30% 50%, rgba(26,122,110,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 50%, rgba(139,0,0,0.08) 0%, transparent 50%);
+  }
+
+  .screen-header {
+    text-align: center;
+    padding: 2rem 0 3rem;
+  }
+
+  .screen-title {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+
+  .screen-sub {
+    font-family: 'Tiro Devanagari Sanskrit', serif;
+    color: rgba(245,230,200,0.7);
+    font-size: 1rem;
+  }
+
+  .chapters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .chapter-card {
+    border: 1px solid rgba(212,160,23,0.3);
+    background: linear-gradient(135deg, rgba(10,10,26,0.9), rgba(20,10,30,0.9));
+    padding: 1.5rem;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 15px 100%, 0 calc(100% - 15px));
+  }
+
+  .chapter-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(212,160,23,0.1), transparent, rgba(139,0,0,0.1));
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .chapter-card:hover::before { opacity: 1; }
+  .chapter-card:hover { border-color: var(--gold); transform: translateY(-4px); box-shadow: 0 10px 40px rgba(212,160,23,0.2); }
+
+  .chapter-card.locked { opacity: 0.4; cursor: not-allowed; }
+  .chapter-card.completed { border-color: var(--teal); }
+  .chapter-card.completed::after { content: '✓'; position: absolute; top: 1rem; right: 1rem; color: var(--teal); font-size: 1.5rem; }
+
+  .chapter-num {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 0.75rem;
+    color: var(--gold-dark);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .chapter-emoji { font-size: 2.5rem; margin-bottom: 0.8rem; display: block; }
+
+  .chapter-name {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 1rem;
+    color: var(--gold-light);
+    margin-bottom: 0.5rem;
+  }
+
+  .chapter-hindi {
+    font-family: 'Tiro Devanagari Sanskrit', serif;
+    font-size: 1.1rem;
+    color: var(--parchment);
+    margin-bottom: 0.5rem;
+  }
+
+  .chapter-desc {
+    font-size: 0.9rem;
+    color: rgba(245,230,200,0.65);
+    line-height: 1.5;
+  }
+
+  /* ===== GAME SCREEN ===== */
+  #game-screen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .game-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    background: rgba(5,5,16,0.9);
+    border-bottom: 1px solid rgba(212,160,23,0.3);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+  }
+
+  .btn-back {
+    background: transparent;
+    border: 1px solid rgba(212,160,23,0.4);
+    color: var(--gold);
+    padding: 0.4rem 1rem;
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .btn-back:hover { background: rgba(212,160,23,0.1); }
+
+  .topbar-title {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 1rem;
+    color: var(--gold);
+    text-align: center;
+  }
+
+  .score-display {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 0.85rem;
+    color: var(--gold-light);
+  }
+
+  .game-content {
+    flex: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+    width: 100%;
+  }
+
+  /* Story panel */
+  .story-panel {
+    background: linear-gradient(135deg, rgba(10,10,26,0.95), rgba(15,5,20,0.95));
+    border: 1px solid rgba(212,160,23,0.25);
+    padding: 2rem 2.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+    clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+  }
+
+  .story-panel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .shloka {
+    font-family: 'Tiro Devanagari Sanskrit', serif;
+    font-size: 1.1rem;
+    color: var(--gold-light);
+    text-align: center;
+    font-style: italic;
+    padding: 1rem;
+    border-left: 3px solid var(--gold-dark);
+    margin-bottom: 1.5rem;
+    background: rgba(212,160,23,0.05);
+    line-height: 1.8;
+  }
+
+  .story-text {
+    font-size: 1.15rem;
+    line-height: 1.9;
+    color: var(--parchment);
+    margin-bottom: 1.5rem;
+  }
+
+  .story-text strong { color: var(--gold-light); }
+  .story-text em { color: var(--orange); font-style: italic; }
+
+  .character-highlight {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: rgba(212,160,23,0.1);
+    border: 1px solid rgba(212,160,23,0.3);
+    padding: 0.1rem 0.5rem;
+    border-radius: 2px;
+    font-weight: 600;
+    color: var(--gold-light);
+  }
+
+  /* Choice panel */
+  .choice-panel {
+    margin-bottom: 2rem;
+  }
+
+  .choice-title {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 0.85rem;
+    color: var(--gold-dark);
+    letter-spacing: 0.2em;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  .choices {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .choice-btn {
+    background: linear-gradient(135deg, rgba(10,10,26,0.9), rgba(20,10,30,0.9));
+    border: 1px solid rgba(212,160,23,0.3);
+    color: var(--parchment);
+    padding: 1rem 1.5rem;
+    font-family: 'Crimson Pro', serif;
+    font-size: 1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    line-height: 1.5;
+  }
+
+  .choice-btn::before {
+    content: '◆';
+    color: var(--gold-dark);
+    margin-right: 0.8rem;
+    transition: color 0.3s ease;
+  }
+
+  .choice-btn:hover {
+    border-color: var(--gold);
+    background: linear-gradient(135deg, rgba(212,160,23,0.15), rgba(139,0,0,0.1));
+    transform: translateX(5px);
+    color: var(--gold-light);
+  }
+
+  .choice-btn:hover::before { color: var(--gold); }
+
+  .choice-btn.correct {
+    border-color: #2ecc71;
+    background: rgba(46,204,113,0.1);
+    color: #2ecc71;
+    pointer-events: none;
+  }
+
+  .choice-btn.wrong {
+    border-color: var(--crimson-light);
+    background: rgba(196,30,58,0.1);
+    color: rgba(245,230,200,0.5);
+    pointer-events: none;
+  }
+
+  .choice-btn.disabled { pointer-events: none; opacity: 0.5; }
+
+  /* Feedback */
+  .feedback-panel {
+    display: none;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid var(--gold);
+    background: rgba(212,160,23,0.05);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--parchment);
+    animation: slideIn 0.4s ease;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .feedback-panel.correct-fb { border-color: #2ecc71; background: rgba(46,204,113,0.05); }
+  .feedback-panel.wrong-fb { border-color: var(--crimson-light); background: rgba(196,30,58,0.05); }
+
+  .next-btn {
+    display: none;
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    border: none;
+    color: var(--midnight);
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+    letter-spacing: 0.1em;
+  }
+
+  .next-btn:hover { transform: scale(1.02); box-shadow: 0 5px 20px rgba(212,160,23,0.4); }
+
+  /* Progress bar */
+  .progress-wrap {
+    margin-bottom: 1.5rem;
+  }
+
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: rgba(245,230,200,0.6);
+    margin-bottom: 0.4rem;
+    font-family: 'Cinzel Decorative', cursive;
+  }
+
+  .progress-bar {
+    height: 4px;
+    background: rgba(212,160,23,0.15);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--crimson), var(--gold));
+    transition: width 0.5s ease;
+    border-radius: 2px;
+  }
+
+  /* Character cards */
+  .char-cards {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+  }
+
+  .char-card-mini {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid rgba(212,160,23,0.2);
+    padding: 0.4rem 0.8rem;
+    background: rgba(10,10,26,0.8);
+    font-size: 0.85rem;
+  }
+
+  /* ===== RESULT SCREEN ===== */
+  #result-screen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .result-emoji { font-size: 5rem; margin-bottom: 1rem; animation: bounce 1s ease; }
+
+  @keyframes bounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+  }
+
+  .result-title {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+
+  .result-score-big {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 4rem;
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 1rem 0;
+  }
+
+  .result-message {
+    font-size: 1.2rem;
+    color: rgba(245,230,200,0.8);
+    max-width: 500px;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+    font-style: italic;
+  }
+
+  .result-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 0.8rem 2rem;
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+  }
+
+  .btn-secondary:hover { background: rgba(212,160,23,0.1); transform: scale(1.03); }
+
+  /* Glow orb decoration */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .orb-1 { width: 400px; height: 400px; top: -200px; left: -200px; background: rgba(139,0,0,0.12); }
+  .orb-2 { width: 500px; height: 500px; bottom: -250px; right: -200px; background: rgba(212,160,23,0.08); }
+  .orb-3 { width: 300px; height: 300px; top: 50%; left: 50%; transform: translate(-50%,-50%); background: rgba(26,122,110,0.05); }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .game-content { padding: 1rem; }
+    .story-panel { padding: 1.5rem 1.2rem; }
+  }
+
+  /* Decorative corners */
+  .corner-decoration {
+    position: absolute;
+    width: 20px; height: 20px;
+    border-color: var(--gold-dark);
+    border-style: solid;
+    opacity: 0.5;
+  }
+  .corner-tl { top: 5px; left: 5px; border-width: 2px 0 0 2px; }
+  .corner-tr { top: 5px; right: 5px; border-width: 2px 2px 0 0; }
+  .corner-bl { bottom: 5px; left: 5px; border-width: 0 0 2px 2px; }
+  .corner-br { bottom: 5px; right: 5px; border-width: 0 2px 2px 0; }
+
+  .total-score-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 0.85rem;
+    color: var(--gold);
+  }
+
+  .star { color: var(--gold-light); }
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- TITLE SCREEN -->
+<div id="title-screen" class="screen active">
+  <div class="title-om">ॐ</div>
+  <h1 class="title-main">MAHABHARAT</h1>
+  <p class="title-sub">महाभारत — महाकाव्य का खेल</p>
+  <div class="title-divider"></div>
+  <p class="title-desc">
+    "यदा यदा हि धर्मस्य ग्लानिर्भवति भारत।<br>
+    अभ्युत्थानमधर्मस्य तदात्मानं सृजाम्यहम्॥"<br><br>
+    धर्म, कर्म, और मोक्ष की इस महागाथा में<br>प्रवेश करें और अपना ज्ञान परखें।
+  </p>
+
+  <div class="char-preview">
+    <div class="char-icon" title="युधिष्ठिर">👑</div>
+    <div class="char-icon" title="अर्जुन">🏹</div>
+    <div class="char-icon" title="कृष्ण">🪈</div>
+    <div class="char-icon" title="भीम">💪</div>
+    <div class="char-icon" title="द्रौपदी">🌸</div>
+  </div>
+
+  <button class="btn-primary" onclick="showChapterSelect()">⚔ खेल शुरू करें ⚔</button>
+</div>
+
+<!-- CHAPTER SELECT -->
+<div id="chapter-screen" class="screen">
+  <div class="screen-header">
+    <button class="btn-back" onclick="showScreen('title-screen')" style="margin-bottom:1rem">← वापस</button>
+    <h2 class="screen-title">अध्याय चुनें</h2>
+    <p class="screen-sub">Choose Your Chapter — पर्व का चयन करें</p>
+  </div>
+  <div class="chapters-grid" id="chapters-grid"></div>
+</div>
+
+<!-- GAME SCREEN -->
+<div id="game-screen" class="screen">
+  <div class="game-topbar">
+    <button class="btn-back" onclick="confirmBack()">← पर्व</button>
+    <div class="topbar-title" id="topbar-chapter-name">महाभारत</div>
+    <div class="total-score-bar">
+      <span class="star">★</span>
+      <span id="total-score-display">0</span>
+    </div>
+  </div>
+  <div class="game-content">
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span id="progress-text">प्रश्न 1/5</span>
+        <span id="score-text">अंक: 0</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    </div>
+
+    <div class="story-panel" id="story-panel">
+      <div class="corner-decoration corner-tl"></div>
+      <div class="corner-decoration corner-tr"></div>
+      <div class="corner-decoration corner-bl"></div>
+      <div class="corner-decoration corner-br"></div>
+      <div class="shloka" id="shloka-text"></div>
+      <div class="story-text" id="story-text"></div>
+    </div>
+
+    <div class="feedback-panel" id="feedback-panel"></div>
+
+    <div class="choice-panel">
+      <p class="choice-title">— आपका निर्णय क्या है? —</p>
+      <div class="choices" id="choices-container"></div>
+    </div>
+
+    <button class="next-btn" id="next-btn" onclick="nextQuestion()">अगला प्रश्न →</button>
+  </div>
+</div>
+
+<!-- RESULT SCREEN -->
+<div id="result-screen" class="screen">
+  <div class="result-emoji" id="result-emoji">🏆</div>
+  <h2 class="result-title" id="result-title">शाबाश!</h2>
+  <div class="result-score-big" id="result-score"></div>
+  <p class="result-message" id="result-message"></p>
+  <div class="result-actions">
+    <button class="btn-secondary" onclick="retryChapter()">↺ फिर से खेलें</button>
+    <button class="btn-primary" onclick="showChapterSelect()">📖 अन्य पर्व</button>
+  </div>
+</div>
+
+
+<script>
+// =========================================================
+// MAHABHARAT QUIZ — 5 chapters × 25 questions each
+// startChapter() picks random 15 from pool every time
+// So you NEVER get same set twice (33 lakh+ combinations)
+// =========================================================
+
+function shuffleArr(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// =========================================================
+// CHAPTER DATA  —  25 questions per chapter
+// =========================================================
+const chapters = [
+
+// ── Chapter 0 : आदि पर्व ──────────────────────────────────
+{
+  id: 0, name: "Adi Parva", hindi: "आदि पर्व", emoji: "🌄",
+  desc: "महाभारत का आरंभ — कुरु वंश, भीष्म प्रतिज्ञा, पांडवों का जन्म, एकलव्य और लाक्षागृह।",
+  unlocked: true,
+  questions: [
+    {
+      shloka: "जनमेजय उवाच — हे द्विजश्रेष्ठ, पितामहों की कथा सुनाइए।",
+      story: "महर्षि <strong>वेदव्यास</strong> ने 18 पर्वों में महाभारत की रचना की। <strong>शांतनु</strong> और <strong>गंगा</strong> के पुत्र <strong>देवव्रत</strong> ने आजीवन ब्रह्मचर्य की भीष्म प्रतिज्ञा ली।",
+      question: "देवव्रत को 'भीष्म' नाम किसलिए मिला?",
+      choices: [
+        { text: "क्योंकि वे बहुत शक्तिशाली थे", correct: false },
+        { text: "क्योंकि उन्होंने भीष्म (भयंकर) प्रतिज्ञा ली — आजीवन विवाह न करने की", correct: true },
+        { text: "क्योंकि वे गंगा के पुत्र थे", correct: false },
+        { text: "क्योंकि वे युद्ध में अजेय थे", correct: false }
+      ],
+      feedback: "देवव्रत ने सत्यवती के पिता की माँग पर यह भीष्म (भयंकर) प्रतिज्ञा ली कि वे न विवाह करेंगे, न सिंहासन पर दावा करेंगे।"
+    },
+    {
+      shloka: "धृतराष्ट्रः पाण्डुश्च विदुरश्च महामतिः।",
+      story: "विचित्रवीर्य की मृत्यु के बाद <strong>वेदव्यास</strong> ने नियोग विधि से तीन पुत्रों को जन्म दिया। <strong>अंबिका</strong> से धृतराष्ट्र जन्मांध हुए।",
+      question: "धृतराष्ट्र जन्म से अंधे क्यों थे?",
+      choices: [
+        { text: "शाप के कारण", correct: false },
+        { text: "उनकी माँ अंबिका ने वेदव्यास को देखकर भय से आँखें बंद कर लीं", correct: true },
+        { text: "युद्ध में घायल होने से", correct: false },
+        { text: "यह दैवीय वरदान था", correct: false }
+      ],
+      feedback: "वेदव्यास का रूप देखकर अंबिका ने भय से आँखें बंद कीं — इसीलिए धृतराष्ट्र जन्मांध हुए।"
+    },
+    {
+      shloka: "पाण्डोः पुत्राः पञ्च वीराः — युधिष्ठिरादयः।",
+      story: "<strong>पांडु</strong> को ऋषि-शाप था कि पत्नी-संसर्ग से मृत्यु होगी। <strong>कुंती</strong> ने दुर्वासा का मंत्र प्रयोग कर देवताओं से पुत्र प्राप्त किए।",
+      question: "अर्जुन किस देव के पुत्र थे?",
+      choices: [
+        { text: "धर्मराज (यम) के", correct: false },
+        { text: "वायु देव के", correct: false },
+        { text: "इंद्र देव के", correct: true },
+        { text: "सूर्य देव के", correct: false }
+      ],
+      feedback: "अर्जुन इंद्र देव के पुत्र थे। इसीलिए उन्हें 'इंद्रपुत्र' और 'फाल्गुन' कहते हैं। सूर्यपुत्र कर्ण थे।"
+    },
+    {
+      shloka: "एकलव्यः — गुरुभक्तिपरायणः श्रेष्ठः।",
+      story: "<strong>एकलव्य</strong> निषाद पुत्र था। द्रोणाचार्य ने उसे शिष्य बनाने से मना किया। उसने उनकी मिट्टी की मूर्ति बनाकर अभ्यास किया।",
+      question: "एकलव्य ने किसे अपना गुरु माना था?",
+      choices: [
+        { text: "कृपाचार्य को", correct: false },
+        { text: "द्रोणाचार्य को — मिट्टी की मूर्ति बनाकर", correct: true },
+        { text: "परशुराम को", correct: false },
+        { text: "भीष्म को", correct: false }
+      ],
+      feedback: "एकलव्य ने द्रोणाचार्य की मूर्ति को गुरु मानकर अभ्यास किया। द्रोण ने गुरुदक्षिणा में अंगूठा माँग लिया।"
+    },
+    {
+      shloka: "लाक्षागृहे पाण्डवाः दग्धुं प्रयत्नः कृतः।",
+      story: "<strong>दुर्योधन</strong> ने <strong>पुरोचन</strong> के साथ वारणावत में लाक्षागृह में पांडवों को जलाने की साजिश रची। <strong>विदुर</strong> ने संकेत में पांडवों को सचेत किया।",
+      question: "लाक्षागृह से पांडव कैसे बचे?",
+      choices: [
+        { text: "कृष्ण ने बचाया", correct: false },
+        { text: "विदुर के विश्वासपात्र ने पहले से सुरंग खोदी जो नदी तक जाती थी", correct: true },
+        { text: "वे वहाँ थे ही नहीं", correct: false },
+        { text: "देवताओं ने वर्षा कराई", correct: false }
+      ],
+      feedback: "विदुर के निर्देश पर एक खनिक ने पहले से सुरंग खोद दी। पांडव रात को आग लगने से पहले निकल गए।"
+    },
+    {
+      shloka: "गंगा-शांतनु संयोगः — देवव्रतस्य जन्म।",
+      story: "<strong>राजा शांतनु</strong> ने गंगा से विवाह की शर्त मानी कि उनके किसी काम में बाधा नहीं डालेंगे। गंगा ने अपने 7 पुत्रों को नदी में बहा दिया।",
+      question: "गंगा ने अपने पुत्रों को नदी में क्यों बहाया?",
+      choices: [
+        { text: "प्रेम नहीं था", correct: false },
+        { text: "वे आठ वसु थे जिन्हें मानव योनि से शीघ्र मुक्ति दिलाने के लिए", correct: true },
+        { text: "शाप था", correct: false },
+        { text: "राज्य की रक्षा के लिए", correct: false }
+      ],
+      feedback: "वे आठ वसु थे जिन्हें वशिष्ठ मुनि ने शाप दिया था। गंगा ने सात को मुक्ति दिलाई, आठवें (भीष्म) को जीना था।"
+    },
+    {
+      shloka: "परशुरामेण भीष्मस्य युद्धम् — अनिर्णीतम्।",
+      story: "परशुराम ने अंबा के अनुरोध पर भीष्म को युद्ध की चुनौती दी। अंबा को भीष्म ने हरण किया था पर विवाह नहीं किया।",
+      question: "अंबा ने भीष्म से विवाह क्यों नहीं किया?",
+      choices: [
+        { text: "भीष्म पसंद नहीं थे", correct: false },
+        { text: "उसका मन राजा शाल्व पर था पर शाल्व ने 'हारी स्त्री' कहकर अस्वीकार किया", correct: true },
+        { text: "उसने संन्यास लिया", correct: false },
+        { text: "धृतराष्ट्र ने रोका", correct: false }
+      ],
+      feedback: "अंबा शाल्व से प्रेम करती थी। शाल्व के ठुकराने पर उसने भीष्म-वध की प्रतिज्ञा ली — अगले जन्म में शिखंडी बनी।"
+    },
+    {
+      shloka: "द्रौपदीस्वयंवरे — पाञ्चालराजपुत्री।",
+      story: "पांचाल में <strong>द्रौपदी</strong> का स्वयंवर था। शर्त — घूमते हुए मछली की आँख में बाण मारना। पांडव ब्राह्मण वेश में उपस्थित थे।",
+      question: "द्रौपदी स्वयंवर में किसने मछली की आँख बेधी?",
+      choices: [
+        { text: "भीम ने", correct: false },
+        { text: "कर्ण ने", correct: false },
+        { text: "अर्जुन ने — ब्राह्मण वेश में", correct: true },
+        { text: "युधिष्ठिर ने", correct: false }
+      ],
+      feedback: "अर्जुन ने ब्राह्मण वेश में मछली की आँख बेधकर स्वयंवर जीता। कर्ण की 'सूत-पुत्र' कहकर उपेक्षा हुई।"
+    },
+    {
+      shloka: "पञ्चभ्यः पाण्डवेभ्यः — द्रौपदी पत्नी अभवत्।",
+      story: "अर्जुन द्रौपदी को लेकर घर आए। माँ <strong>कुंती</strong> ने बिना देखे कहा — 'जो लाए हो आपस में बाँट लो।' माँ का वचन अटल था।",
+      question: "द्रौपदी के पाँच पतियों की परंपरा को किसने उचित ठहराया?",
+      choices: [
+        { text: "कृष्ण ने", correct: false },
+        { text: "व्यास जी ने — पूर्वजन्म की कथा सुनाकर", correct: true },
+        { text: "भीष्म ने", correct: false },
+        { text: "द्रुपद ने", correct: false }
+      ],
+      feedback: "व्यास जी ने बताया — पूर्वजन्म में द्रौपदी ने 'गुणवान पति दो' पाँच बार कहा था, इसीलिए पाँच पति मिले।"
+    },
+    {
+      shloka: "खांडवदहनं — अर्जुन-कृष्णयोः पराक्रमः।",
+      story: "<strong>अग्निदेव</strong> खांडव वन जलाना चाहते थे। <strong>अर्जुन</strong> और <strong>कृष्ण</strong> ने सहायता की। इसमें एक दानव बच गया।",
+      question: "खांडव दहन में किसे जीवित बचाया जो बाद में उपकारी बना?",
+      choices: [
+        { text: "सभी पशु-पक्षी", correct: false },
+        { text: "मय दानव — जिसने इंद्रप्रस्थ की अद्भुत सभा बनाई", correct: true },
+        { text: "इंद्र देव", correct: false },
+        { text: "नागराज तक्षक", correct: false }
+      ],
+      feedback: "मय दानव ने कृतज्ञता में पांडवों के लिए वह अद्भुत सभागार बनाया जिसमें दुर्योधन धोखा खाता था।"
+    },
+    {
+      shloka: "जरासंधवधः — भीमेन कृतः।",
+      story: "<strong>जरासंध</strong> मगध का शक्तिशाली राजा था जो दो भागों में जन्मा था। उसने 86 राजाओं को कैद किया था।",
+      question: "जरासंध को किसने मारा और कैसे?",
+      choices: [
+        { text: "अर्जुन ने बाण से", correct: false },
+        { text: "कृष्ण के इशारे पर भीम ने बीच से चीरकर विपरीत दिशाओं में फेंका", correct: true },
+        { text: "कृष्ण ने सुदर्शन चक्र से", correct: false },
+        { text: "युधिष्ठिर ने", correct: false }
+      ],
+      feedback: "कृष्ण ने तिनका तोड़कर इशारा किया। भीम ने जरासंध को बीच से चीरकर दोनों टुकड़े विपरीत दिशाओं में फेंके — जुड़ न पाए।"
+    },
+    {
+      shloka: "नकुलः सहदेवश्च — माद्रीपुत्रौ।",
+      story: "<strong>माद्री</strong> ने कुंती से मंत्र सीखकर अश्विनी कुमारों का आह्वान किया। नकुल घोड़ों के विशेषज्ञ और सहदेव ज्योतिषी थे।",
+      question: "सहदेव भविष्य जानते थे — फिर भी चुप क्यों रहे?",
+      choices: [
+        { text: "जानते नहीं थे", correct: false },
+        { text: "शाप था — बिना पूछे बताने पर मृत्यु होती", correct: true },
+        { text: "डरते थे", correct: false },
+        { text: "कृष्ण ने मना किया था", correct: false }
+      ],
+      feedback: "सहदेव को शाप था — बिना पूछे भविष्य बताने पर मृत्यु। इसीलिए सब जानते हुए भी मौन रहे।"
+    },
+    {
+      shloka: "भीमः — वायुपुत्रः, हिडिम्बवधः।",
+      story: "<strong>भीम</strong> वायुदेव के पुत्र थे। लाक्षागृह से भागते समय उनकी मुलाकात राक्षस <strong>हिडिम्ब</strong> से हुई।",
+      question: "भीम ने किस राक्षस को मारकर उसकी बहन से विवाह किया?",
+      choices: [
+        { text: "बकासुर को", correct: false },
+        { text: "हिडिम्ब को — हिडिम्बा के भाई को", correct: true },
+        { text: "जरासंध को", correct: false },
+        { text: "किर्मीर को", correct: false }
+      ],
+      feedback: "हिडिम्ब से भीम ने युद्ध किया और उसे मारा। हिडिम्बा भीम पर मोहित थी, उनसे घटोत्कच का जन्म हुआ।"
+    },
+    {
+      shloka: "विदुरः — नीतिज्ञः, धर्मराजावतारः।",
+      story: "<strong>विदुर</strong> धर्मराज यम के अवतार माने जाते हैं। वे सदा सत्य बोलते और धृतराष्ट्र को सही सलाह देते थे।",
+      question: "विदुर ने पांडवों को लाक्षागृह के खतरे से कैसे सचेत किया?",
+      choices: [
+        { text: "पत्र लिखकर", correct: false },
+        { text: "कूट भाषा में — एक श्लोक बोलकर जो केवल युधिष्ठिर समझे", correct: true },
+        { text: "कुंती को बताकर", correct: false },
+        { text: "सीधे बता दिया", correct: false }
+      ],
+      feedback: "विदुर ने कूट भाषा में युधिष्ठिर को सचेत किया — यह उनकी नीति का उदाहरण है।"
+    },
+    {
+      shloka: "महाभारतं — अष्टादशपर्वात्मकम्।",
+      story: "<strong>वेदव्यास</strong> ने महाभारत की रचना की। इसमें 18 पर्व, 1 लाख श्लोक हैं। इसे 'पंचम वेद' भी कहते हैं।",
+      question: "महाभारत में कितने पर्व हैं?",
+      choices: [
+        { text: "12 पर्व", correct: false },
+        { text: "16 पर्व", correct: false },
+        { text: "18 पर्व", correct: true },
+        { text: "21 पर्व", correct: false }
+      ],
+      feedback: "महाभारत में 18 पर्व और लगभग 1 लाख श्लोक हैं। कुरुक्षेत्र युद्ध भी 18 दिन चला और गीता में भी 18 अध्याय हैं।"
+    },
+    {
+      shloka: "अर्जुनस्य गांडीवम् — दिव्यं धनुः।",
+      story: "<strong>अर्जुन</strong> का प्रसिद्ध धनुष <strong>गांडीव</strong> था। उनके रथ के ध्वज पर हनुमान जी विराजमान थे।",
+      question: "अर्जुन के रथ के ध्वज पर कौन था?",
+      choices: [
+        { text: "गरुड़", correct: false },
+        { text: "हनुमान जी", correct: true },
+        { text: "कृष्ण", correct: false },
+        { text: "इंद्र", correct: false }
+      ],
+      feedback: "हनुमान जी अर्जुन के ध्वज पर थे। इसीलिए अर्जुन का नाम 'कपिध्वज' है। जहाँ कृष्ण और हनुमान हों — वहाँ विजय निश्चित है।"
+    },
+    {
+      shloka: "द्रोणाचार्यस्य गुरुदक्षिणा — द्रुपदः।",
+      story: "<strong>द्रोणाचार्य</strong> ने सभी राजकुमारों को शिक्षा दी। गुरुदक्षिणा में उन्होंने <strong>द्रुपद</strong> को बंदी बनाने को कहा।",
+      question: "द्रुपद ने बदले के लिए क्या किया?",
+      choices: [
+        { text: "सेना बनाई", correct: false },
+        { text: "यज्ञ किया — जिससे धृष्टद्युम्न और द्रौपदी उत्पन्न हुए", correct: true },
+        { text: "कृष्ण की मदद माँगी", correct: false },
+        { text: "पांडवों से गठबंधन किया", correct: false }
+      ],
+      feedback: "द्रुपद के यज्ञ से धृष्टद्युम्न (द्रोण-वधकर्ता) और द्रौपदी उत्पन्न हुए — नियति पहले से तय थी।"
+    },
+    {
+      shloka: "कुंती — पांडवमाता, वरदानधारिणी।",
+      story: "<strong>कुंती</strong> के पास दुर्वासा का दिया मंत्र था। उन्होंने बालिकावस्था में जिज्ञासा से सूर्य देव को बुलाया।",
+      question: "कुंती ने सबसे पहले किस देव का आह्वान किया?",
+      choices: [
+        { text: "इंद्र को", correct: false },
+        { text: "सूर्य देव को — परीक्षा के तौर पर, जिससे कर्ण जन्मे", correct: true },
+        { text: "धर्मराज को", correct: false },
+        { text: "वायु को", correct: false }
+      ],
+      feedback: "बालिकावस्था में जिज्ञासा से सूर्य को बुलाया — कर्ण जन्मे, कवच-कुंडल सहित। अविवाहित होने से कर्ण को बहा दिया।"
+    },
+    {
+      shloka: "गांधारी — पतिव्रता, नेत्रपट्टी।",
+      story: "<strong>गांधारी</strong> ने पति के अंधेपन को जानकर स्वयं आँखों पर पट्टी बाँध ली।",
+      question: "गांधारी के पुत्र किस प्रकार उत्पन्न हुए?",
+      choices: [
+        { text: "सामान्य रूप से", correct: false },
+        { text: "एक मांस-पिंड से — व्यास ने 101 घड़ों में रखा", correct: true },
+        { text: "देवताओं के वरदान से", correct: false },
+        { text: "तपस्या से", correct: false }
+      ],
+      feedback: "व्यास ने एक मांस-पिंड को 101 भागों में बाँटकर घड़ों में रखा — 100 पुत्र और 1 पुत्री दुःशला उत्पन्न हुई।"
+    },
+    {
+      shloka: "यक्षप्रश्नः — युधिष्ठिरस्य ज्ञानपरीक्षा।",
+      story: "वनवास में एक सरोवर पर <strong>यक्ष</strong> ने पहरा दिया। बिना उत्तर दिए पानी पीने पर सभी मूर्च्छित हुए।",
+      question: "यक्ष के 'सबसे बड़ा आश्चर्य क्या है?' का युधिष्ठिर ने क्या उत्तर दिया?",
+      choices: [
+        { text: "ईश्वर की महिमा", correct: false },
+        { text: "रोज हजारों मरते हैं फिर भी हर कोई मानता है — 'मैं नहीं मरूँगा'", correct: true },
+        { text: "पृथ्वी का गोल होना", correct: false },
+        { text: "जल का ऊपर जाना", correct: false }
+      ],
+      feedback: "युधिष्ठिर का उत्तर — 'मृत्यु सामने दिखती है फिर भी मनुष्य खुद को अमर मानता है — यही सबसे बड़ा आश्चर्य।'"
+    },
+    {
+      shloka: "विराटनगरे — शमीवृक्षे अस्त्राणि।",
+      story: "अज्ञातवास के अंत में <strong>कौरवों</strong> ने विराट की गायें चुराईं। <strong>अर्जुन</strong> बृहन्नला वेश में उत्तर कुमार के साथ लड़ने गए।",
+      question: "अर्जुन ने अपने दिव्य अस्त्र कहाँ छुपाए थे?",
+      choices: [
+        { text: "नीम के पेड़ में", correct: false },
+        { text: "शमी के पेड़ में", correct: true },
+        { text: "एक गुफा में", correct: false },
+        { text: "नदी में", correct: false }
+      ],
+      feedback: "अर्जुन ने शमी (खेजड़ी) पेड़ में अस्त्र छुपाए। इसीलिए दशहरे पर शमी पूजन की परंपरा है।"
+    },
+    {
+      shloka: "भीष्मः — इच्छामृत्युधारी, शरशैया।",
+      story: "<strong>भीष्म</strong> के पास इच्छामृत्यु का वरदान था। उन्होंने युधिष्ठिर से कहा — 'मैं लड़ूँगा, पर विजय तुम्हारी होगी।'",
+      question: "भीष्म ने युधिष्ठिर को क्या रहस्य बताया?",
+      choices: [
+        { text: "कौरवों की कमजोरी", correct: false },
+        { text: "मुझे केवल शिखंडी के सामने रोका जा सकता है", correct: true },
+        { text: "दुर्योधन को कैसे हराएँ", correct: false },
+        { text: "कर्ण का रहस्य", correct: false }
+      ],
+      feedback: "शिखंडी (पूर्वजन्म की अंबा) भीष्म का मृत्यु-हेतु था। इसी जानकारी का उपयोग पांडवों ने किया।"
+    },
+    {
+      shloka: "पांडवानां इंद्रप्रस्थनिर्माणम्।",
+      story: "<strong>धृतराष्ट्र</strong> ने खांडवप्रस्थ (बंजर भूमि) पांडवों को दी। पांडवों ने उसे सुंदर नगर बनाया।",
+      question: "इंद्रप्रस्थ की सभा किसने बनाई?",
+      choices: [
+        { text: "विश्वकर्मा ने", correct: false },
+        { text: "मय दानव ने", correct: true },
+        { text: "इंद्र ने", correct: false },
+        { text: "वेदव्यास ने", correct: false }
+      ],
+      feedback: "खांडव दहन में बचाए गए मय दानव ने कृतज्ञता से वह अद्भुत सभागार बनाया जिसमें दुर्योधन बार-बार धोखा खाया।"
+    },
+    {
+      shloka: "शांतनुः सत्यवतीं विवाहितुम् इच्छति।",
+      story: "<strong>शांतनु</strong> मछुआरे की पुत्री <strong>सत्यवती</strong> पर मोहित हो गए। मछुआरे ने शर्त रखी — सत्यवती का पुत्र ही राजा बनेगा।",
+      question: "भीष्म ने सत्यवती-विवाह के लिए पिता की मदद के लिए क्या त्याग किया?",
+      choices: [
+        { text: "केवल सिंहासन", correct: false },
+        { text: "सिंहासन का दावा AND आजीवन ब्रह्मचर्य — दोनों", correct: true },
+        { text: "केवल विवाह", correct: false },
+        { text: "राज्य से निर्वासन", correct: false }
+      ],
+      feedback: "देवव्रत ने दोनों प्रतिज्ञाएँ लीं — सिंहासन छोड़ा AND ब्रह्मचर्य। इसीलिए 'भीष्म' (भयंकर प्रतिज्ञा वाले) कहलाए।"
+    },
+    {
+      shloka: "पांडुः — श्वेतवर्णः, वनं गतः।",
+      story: "<strong>पांडु</strong> राजा बने पर ऋषि किंदम के शाप से पत्नी-संसर्ग पर मृत्यु का भय था। वे वन में रहे।",
+      question: "पांडु की मृत्यु कैसे हुई?",
+      choices: [
+        { text: "युद्ध में", correct: false },
+        { text: "माद्री के साथ संसर्ग करने पर — ऋषि शाप के कारण", correct: true },
+        { text: "रोग से", correct: false },
+        { text: "बिजली गिरने से", correct: false }
+      ],
+      feedback: "वसंत ऋतु में मन चंचल हो गया और माद्री के साथ संसर्ग से ऋषि-शाप ने मृत्यु दी। माद्री पति के साथ सती हुईं।"
+    }
+  ]
+},
+
+// ── Chapter 1 : सभा पर्व ─────────────────────────────────
+{
+  id: 1, name: "Sabha Parva", hindi: "सभा पर्व", emoji: "🎲",
+  desc: "इंद्रप्रस्थ, राजसूय यज्ञ, शकुनि का कुटिल द्यूत, द्रौपदी का अपमान और वनवास।",
+  unlocked: true,
+  questions: [
+    {
+      shloka: "मयेन निर्मितं सभागारं दिव्यम् इंद्रप्रस्थे।",
+      story: "<strong>इंद्रप्रस्थ</strong> के सभागार का फर्श पानी जैसा पारदर्शी था। <strong>दुर्योधन</strong> उसे पानी समझकर कपड़े उठाता था।",
+      question: "राजसूय यज्ञ में 'अग्रपूजा' किसे मिली?",
+      choices: [
+        { text: "युधिष्ठिर को", correct: false },
+        { text: "भीष्म पितामह को", correct: false },
+        { text: "श्रीकृष्ण को", correct: true },
+        { text: "द्रोणाचार्य को", correct: false }
+      ],
+      feedback: "भीष्म के सुझाव पर कृष्ण को अग्रपूजा मिली। शिशुपाल ने विरोध किया और 100 अपराध पूरे होने पर कृष्ण ने सुदर्शन चक्र से वध किया।"
+    },
+    {
+      shloka: "अक्षक्रीडायां पाण्डवाः सर्वस्वं अहासुः।",
+      story: "<strong>शकुनि</strong> के पासे हमेशा उसकी मर्जी से गिरते थे — मृत पिता की हड्डियों से बने थे।",
+      question: "शकुनि के पासे में क्या विशेषता थी?",
+      choices: [
+        { text: "सोने के थे", correct: false },
+        { text: "हमेशा शकुनि की इच्छानुसार गिरते थे — पिता की हड्डियों से बने", correct: true },
+        { text: "देवताओं ने दिए थे", correct: false },
+        { text: "मायावी थे", correct: false }
+      ],
+      feedback: "शकुनि के पिता ने मरते समय वरदान दिया — ये पासे मेरी मर्जी से गिरेंगे। यही उसकी छल-शक्ति थी।"
+    },
+    {
+      shloka: "धर्मस्य सूक्ष्मा गतिः — द्रौपदी प्रश्नः।",
+      story: "द्यूत सभा में <strong>दु:शासन</strong> द्रौपदी का वस्त्र हरण करने लगा। पांडव मौन रहे।",
+      question: "द्रौपदी की रक्षा किसने की?",
+      choices: [
+        { text: "भीम ने", correct: false },
+        { text: "अर्जुन ने", correct: false },
+        { text: "श्रीकृष्ण ने — अनंत वस्त्र प्रदान किए", correct: true },
+        { text: "विदुर ने", correct: false }
+      ],
+      feedback: "द्रौपदी की पुकार पर कृष्ण ने अदृश्य रूप से वस्त्र अनंत कर दिए। दु:शासन थककर गिरा पर वस्त्र नहीं समाप्त हुए।"
+    },
+    {
+      shloka: "वनवासं च अज्ञातवासं च पाण्डवाः स्वीकृतवन्तः।",
+      story: "द्यूत के परिणामस्वरूप <strong>12 वर्ष वनवास</strong> और <strong>1 वर्ष अज्ञातवास</strong> की शर्त बनी।",
+      question: "अज्ञातवास में पांडव किस राज्य में रहे?",
+      choices: [
+        { text: "द्वारका में", correct: false },
+        { text: "मत्स्य राज्य में — राजा विराट के यहाँ", correct: true },
+        { text: "पांचाल में", correct: false },
+        { text: "हस्तिनापुर में", correct: false }
+      ],
+      feedback: "पांडव राजा विराट के मत्स्य राज्य में अलग-अलग वेश में रहे — युधिष्ठिर कंक, भीम बल्लव, अर्जुन बृहन्नला।"
+    },
+    {
+      shloka: "शिशुपालवधः — सुदर्शनचक्रेण कृष्णेन।",
+      story: "<strong>शिशुपाल</strong> ने कृष्ण का बार-बार अपमान किया। कृष्ण ने 100 अपराध क्षमा करने का वचन दिया था।",
+      question: "कृष्ण ने 100 अपराध क्षमा करने का वचन किसे दिया था?",
+      choices: [
+        { text: "युधिष्ठिर को", correct: false },
+        { text: "शिशुपाल की माँ को — जो कृष्ण की बुआ थीं", correct: true },
+        { text: "भीष्म को", correct: false },
+        { text: "अर्जुन को", correct: false }
+      ],
+      feedback: "शिशुपाल की माँ कृष्ण की बुआ थीं। 100वाँ अपराध होते ही सुदर्शन चक्र से वध।"
+    },
+    {
+      shloka: "युधिष्ठिरः — पासे मोहग्रस्तः।",
+      story: "<strong>युधिष्ठिर</strong> को जुए की लत थी। शकुनि ने उन्हें निमंत्रण दिया और वे एक-एक करके सब हारते गए।",
+      question: "युधिष्ठिर ने जुए में सबसे पहले क्या दाँव पर लगाया?",
+      choices: [
+        { text: "द्रौपदी को", correct: false },
+        { text: "भाइयों को", correct: false },
+        { text: "राज्य और संपत्ति को", correct: true },
+        { text: "खुद को", correct: false }
+      ],
+      feedback: "पहले राज्य, फिर सेना-सम्पत्ति, फिर एक-एक भाई, फिर स्वयं, अंत में द्रौपदी — इस क्रम में सब हारा।"
+    },
+    {
+      shloka: "द्रौपदीं प्रति कीचकस्य दुर्व्यवहारः।",
+      story: "अज्ञातवास में विराट के सेनापति <strong>कीचक</strong> ने सैरंध्री (द्रौपदी) पर कुदृष्टि डाली।",
+      question: "भीम ने कीचक को कैसे मारा?",
+      choices: [
+        { text: "खुले युद्ध में", correct: false },
+        { text: "रात को नृत्यशाला में बुलाकर गुप्त रूप से", correct: true },
+        { text: "विष देकर", correct: false },
+        { text: "अर्जुन ने बाण से मारा", correct: false }
+      ],
+      feedback: "द्रौपदी ने कीचक को रात को नृत्यशाला में बुलाया। भीम वहाँ छुपे थे और उन्होंने वध किया।"
+    },
+    {
+      shloka: "धृतराष्ट्रेण वरत्रयम् — पांडवेभ्यः।",
+      story: "<strong>धृतराष्ट्र</strong> का दिल पिघला। उन्होंने द्रौपदी को तीन वर दिए। पहला — पांडव स्वतंत्र, दूसरा — शस्त्र वापस।",
+      question: "द्रौपदी ने तीसरा वर क्यों नहीं माँगा?",
+      choices: [
+        { text: "कुछ नहीं चाहिए था", correct: false },
+        { text: "'क्षत्रिय पति स्वयं अपना भाग्य बनाएंगे — मैं लालची नहीं बनूँगी'", correct: true },
+        { text: "धृतराष्ट्र ने मना किया", correct: false },
+        { text: "दुर्योधन ने रोका", correct: false }
+      ],
+      feedback: "द्रौपदी की यह बात उनके आत्मसम्मान और बुद्धिमत्ता का सर्वोच्च उदाहरण है।"
+    },
+    {
+      shloka: "गांधारी — पुत्रशतमाता, अक्षिपट्टी।",
+      story: "<strong>गांधारी</strong> ने पति के अंधेपन को जानकर स्वयं पट्टी बाँधी। उनके 100 पुत्र और एक पुत्री दुःशला थी।",
+      question: "गांधारी के पुत्रों में सबसे बड़ा कौन था?",
+      choices: [
+        { text: "दु:शासन", correct: false },
+        { text: "दुर्योधन", correct: true },
+        { text: "विकर्ण", correct: false },
+        { text: "जयद्रथ", correct: false }
+      ],
+      feedback: "दुर्योधन सबसे बड़ा था। विकर्ण उनमें सबसे धर्मात्मा माना जाता था — उसने सभा में द्रौपदी के पक्ष में बोला।"
+    },
+    {
+      shloka: "विदुरनीतिः — राजधर्मस्य सम्पूर्णज्ञानम्।",
+      story: "<strong>विदुर</strong> धर्मराज यम के अवतार हैं। उनकी नीतियाँ आज भी 'विदुर नीति' के रूप में प्रसिद्ध हैं।",
+      question: "विदुर किसके पुत्र थे?",
+      choices: [
+        { text: "शांतनु के", correct: false },
+        { text: "वेदव्यास और एक दासी के", correct: true },
+        { text: "धृतराष्ट्र के", correct: false },
+        { text: "पांडु के", correct: false }
+      ],
+      feedback: "वेदव्यास और विचित्रवीर्य की एक दासी से विदुर का जन्म हुआ। दासी ने शांत भाव से स्वागत किया इसलिए विदुर गुणवान और धर्मात्मा बने।"
+    },
+    {
+      shloka: "भीमस्य प्रतिज्ञा — द्रौपद्यर्थम्।",
+      story: "द्रौपदी के वस्त्र-हरण के समय <strong>भीम</strong> ने भयंकर प्रतिज्ञाएँ लीं।",
+      question: "भीम ने द्यूत-सभा में क्या-क्या प्रतिज्ञाएँ लीं?",
+      choices: [
+        { text: "केवल दुर्योधन को मारने की", correct: false },
+        { text: "दु:शासन की छाती का रक्त पीने और दुर्योधन की जाँघ तोड़ने की", correct: true },
+        { text: "शकुनि को मारने की", correct: false },
+        { text: "पूरे कौरव कुल का नाश करने की", correct: false }
+      ],
+      feedback: "भीम ने दोनों प्रतिज्ञाएँ पूरी कीं — महाभारत युद्ध में दु:शासन की छाती का रक्त पिया और दुर्योधन की जाँघ तोड़ी।"
+    },
+    {
+      shloka: "राजसूययज्ञः — युधिष्ठिरस्य।",
+      story: "<strong>युधिष्ठिर</strong> ने राजसूय यज्ञ किया। इसमें कृष्ण ने जरासंध के 86 कैदी राजाओं को मुक्त कराया।",
+      question: "राजसूय यज्ञ के लिए सबसे पहले कौन-सी बाधा दूर करनी थी?",
+      choices: [
+        { text: "भीष्म की अनुमति लेनी थी", correct: false },
+        { text: "जरासंध को हराना था — जो 86 राजाओं को कैद रखता था", correct: true },
+        { text: "शकुनि से युद्ध", correct: false },
+        { text: "द्रुपद की अनुमति", correct: false }
+      ],
+      feedback: "जरासंध 100 राजाओं की बलि देकर शिव को प्रसन्न करना चाहता था। उसे हराना राजसूय की पहली शर्त थी।"
+    },
+    {
+      shloka: "विराटराजे — उत्तरकुमारः, अर्जुनः सारथिः।",
+      story: "अज्ञातवास के अंत में कौरवों ने विराट की गायें चुराईं। <strong>उत्तर कुमार</strong> डर गया, अर्जुन (बृहन्नला) ने सारथी बनकर लड़ाई की।",
+      question: "अर्जुन ने किस तरह कौरव सेना को हराया?",
+      choices: [
+        { text: "भीम की मदद से", correct: false },
+        { text: "शमी पेड़ से अस्त्र लेकर अकेले", correct: true },
+        { text: "कृष्ण की मदद से", correct: false },
+        { text: "विराट सेना के साथ मिलकर", correct: false }
+      ],
+      feedback: "शमी पेड़ से दिव्यास्त्र लेकर अर्जुन ने अकेले भीष्म, द्रोण, कर्ण सहित पूरी कौरव सेना को हराया।"
+    },
+    {
+      shloka: "द्वितीयद्यूतम् — पुनः वनवासः।",
+      story: "धृतराष्ट्र ने तीन वर देकर राज्य वापस किया पर दुर्योधन ने दूसरे द्यूत का आयोजन किया।",
+      question: "दूसरे द्यूत में क्या हुआ?",
+      choices: [
+        { text: "पांडव जीत गए", correct: false },
+        { text: "पांडव फिर हारे — 12 वर्ष वन और 1 वर्ष अज्ञातवास", correct: true },
+        { text: "युद्ध हो गया", correct: false },
+        { text: "शकुनि पकड़ा गया", correct: false }
+      ],
+      feedback: "दूसरी बार भी शकुनि के जादुई पासों से पांडव हारे। 13 वर्षों के लिए फिर वनवास।"
+    },
+    {
+      shloka: "द्रौपदीस्वयंवरे — कर्णः।",
+      story: "स्वयंवर में <strong>कर्ण</strong> सबसे कुशल धनुर्धर थे और मछली की आँख बेध सकते थे।",
+      question: "स्वयंवर में कर्ण को क्यों रोका गया?",
+      choices: [
+        { text: "धनुष कमजोर था", correct: false },
+        { text: "द्रौपदी ने 'सूत-पुत्र को वरमाला नहीं' कहकर रोका", correct: true },
+        { text: "आमंत्रण नहीं था", correct: false },
+        { text: "दुर्योधन ने रोका", correct: false }
+      ],
+      feedback: "कर्ण के जीवन का सबसे बड़ा अपमान — योग्य होते हुए भी जन्म के कारण अस्वीकार।"
+    },
+    {
+      shloka: "भीमः बकासुरं जघान।",
+      story: "वन में <strong>बकासुर</strong> राक्षस प्रतिदिन गाँव से खाना और एक मनुष्य माँगता था। पांडव एक ब्राह्मण के घर ठहरे थे।",
+      question: "भीम ने बकासुर का वध क्यों किया?",
+      choices: [
+        { text: "उससे बदला लेने के लिए", correct: false },
+        { text: "ब्राह्मण परिवार को उसकी बलि देनी थी — भीम उनकी जगह गए", correct: true },
+        { text: "युधिष्ठिर ने आदेश दिया", correct: false },
+        { text: "कृष्ण ने कहा", correct: false }
+      ],
+      feedback: "भीम ने ब्राह्मण परिवार की बलि की जगह खुद जाकर बकासुर का वध किया — यह उनकी उदारता थी।"
+    },
+    {
+      shloka: "इंद्रप्रस्थे — दुर्योधनस्य अपमानः।",
+      story: "<strong>दुर्योधन</strong> इंद्रप्रस्थ की सभा में बार-बार धोखा खाया — फर्श पर गिरा, पानी में पाँव डाला।",
+      question: "दुर्योधन के इस अपमान पर किसने उपहास किया?",
+      choices: [
+        { text: "भीम ने", correct: false },
+        { text: "द्रौपदी ने — 'अंधे का बेटा अंधा'", correct: true },
+        { text: "युधिष्ठिर ने", correct: false },
+        { text: "कृष्ण ने", correct: false }
+      ],
+      feedback: "द्रौपदी के उपहास ने दुर्योधन के मन में गहरा घाव दिया। यही बाद में महायुद्ध का कारण बना।"
+    },
+    {
+      shloka: "अज्ञातवासे — युधिष्ठिरः कंकः।",
+      story: "अज्ञातवास में सभी पांडवों ने नए नाम और वेश धारण किए।",
+      question: "अज्ञातवास में भीम किस वेश में थे?",
+      choices: [
+        { text: "नृत्य गुरु", correct: false },
+        { text: "रसोइया (बल्लव)", correct: true },
+        { text: "अश्वपालक", correct: false },
+        { text: "ब्राह्मण", correct: false }
+      ],
+      feedback: "भीम 'बल्लव' नाम से रसोइया बने — खाने-पाकने में रुचि के कारण यह वेश उन्हें खूब भाया!"
+    },
+    {
+      shloka: "कुंती — अविवाहिते सूर्यपुत्रः।",
+      story: "<strong>कुंती</strong> ने अविवाहित अवस्था में कर्ण को जन्म दिया। समाज के भय से उन्हें नदी में बहा दिया।",
+      question: "कर्ण को किसने पाला?",
+      choices: [
+        { text: "एक मछुआरे ने", correct: false },
+        { text: "सूत अधिरथ और उनकी पत्नी राधा ने", correct: true },
+        { text: "एक ब्राह्मण ने", correct: false },
+        { text: "इंद्र ने", correct: false }
+      ],
+      feedback: "सूत अधिरथ और उनकी पत्नी राधा ने कर्ण को पाला — इसीलिए कर्ण को 'राधेय' और 'सूत-पुत्र' भी कहते हैं।"
+    },
+    {
+      shloka: "विराटपुत्री उत्तरा — अभिमन्युपत्नी।",
+      story: "अज्ञातवास के बाद <strong>विराट</strong> ने पांडवों की सहायता की। उनकी पुत्री <strong>उत्तरा</strong> का विवाह अर्जुन के पुत्र अभिमन्यु से हुआ।",
+      question: "उत्तरा कुमार युद्धभूमि पर क्यों डर गए?",
+      choices: [
+        { text: "उन्हें युद्ध नहीं जानते थे", correct: false },
+        { text: "कौरव सेना की विशालता देखकर", correct: true },
+        { text: "रथ टूट गया", correct: false },
+        { text: "भीष्म को देखकर", correct: false }
+      ],
+      feedback: "उत्तर ने बड़े-बड़े वीरों — भीष्म, द्रोण, कर्ण — को देखा और डर गए। अर्जुन ने सारथी बनकर उन्हें प्रेरित किया।"
+    },
+    {
+      shloka: "युधिष्ठिरस्य धर्मः — सत्यमेव जयते।",
+      story: "<strong>युधिष्ठिर</strong> का रथ जमीन से 4 अंगुल ऊपर चलता था — क्योंकि वे कभी झूठ नहीं बोलते थे।",
+      question: "युधिष्ठिर का रथ जमीन पर कब आया?",
+      choices: [
+        { text: "द्यूत में हारने पर", correct: false },
+        { text: "द्रोण-वध में अर्धसत्य बोलने पर", correct: true },
+        { text: "वनवास में", correct: false },
+        { text: "युद्ध में पहले दिन", correct: false }
+      ],
+      feedback: "'अश्वत्थामा मरा — नरो वा कुंजरो वा' कहने से अर्धसत्य हुआ और रथ जमीन पर आ गया।"
+    },
+    {
+      shloka: "कर्णः — सूर्यपुत्रः, दानवीरः।",
+      story: "<strong>कर्ण</strong> जन्म से अभेद्य कवच-कुंडल धारण करते थे। वे असाधारण दानवीर थे।",
+      question: "इंद्र ने कवच-कुंडल किस वेश में लिए?",
+      choices: [
+        { text: "राजा के वेश में", correct: false },
+        { text: "ब्राह्मण के वेश में", correct: true },
+        { text: "ऋषि के वेश में", correct: false },
+        { text: "योद्धा के वेश में", correct: false }
+      ],
+      feedback: "इंद्र ब्राह्मण बनकर आए। कृष्ण ने कर्ण को सचेत किया था पर दानवीर कर्ण ने 'देने में' कोई विकल्प नहीं माना।"
+    },
+    {
+      shloka: "संजयः — दिव्यदृष्टिधारी।",
+      story: "<strong>संजय</strong> को व्यास जी ने दिव्य दृष्टि दी। उन्होंने युद्ध की प्रत्येक घटना धृतराष्ट्र को सुनाई।",
+      question: "गीता का प्रथम श्लोक कौन बोलता है?",
+      choices: [
+        { text: "अर्जुन", correct: false },
+        { text: "कृष्ण", correct: false },
+        { text: "धृतराष्ट्र — 'धर्मक्षेत्रे कुरुक्षेत्रे...'", correct: true },
+        { text: "संजय", correct: false }
+      ],
+      feedback: "गीता का प्रारंभ धृतराष्ट्र के प्रश्न से होता है — 'धर्मक्षेत्रे कुरुक्षेत्रे समवेता युयुत्सवः...'"
+    },
+    {
+      shloka: "द्रौपदीस्वयंवरे पांडवाः।",
+      story: "स्वयंवर के बाद द्रौपदी को घर लाने पर भीड़ ने पांडवों को घेरा। <strong>भीम</strong> और <strong>अर्जुन</strong> ने सबको हराया।",
+      question: "स्वयंवर के बाद कृष्ण ने पांडवों को पहचाना कैसे?",
+      choices: [
+        { text: "उन्हें पहले से पता था", correct: false },
+        { text: "उनकी शक्ति और पराक्रम देखकर", correct: true },
+        { text: "बलराम ने बताया", correct: false },
+        { text: "द्रुपद ने बताया", correct: false }
+      ],
+      feedback: "कृष्ण ने भीम की अपार शक्ति और अर्जुन के धनुर्कौशल को देखकर पहचाना — और सबसे पहले जाकर मिले।"
+    }
+  ]
+},
+
+// ── Chapter 2 : उद्योग पर्व ──────────────────────────────
+{
+  id: 2, name: "Udyoga Parva", hindi: "उद्योग पर्व", emoji: "🤝",
+  desc: "युद्ध की तैयारी, कृष्ण की शांतिदूत यात्रा, कर्ण का रहस्य, सेना संगठन।",
+  unlocked: true,
+  questions: [
+    {
+      shloka: "नारायणी सेना अर्जुनाय, कृष्णः कौन्तेयाय।",
+      story: "दुर्योधन और अर्जुन दोनों कृष्ण से सहायता माँगने द्वारका पहुँचे। कृष्ण सो रहे थे।",
+      question: "अर्जुन ने नारायणी सेना की जगह अकेले कृष्ण को क्यों चुना?",
+      choices: [
+        { text: "सेना कमजोर थी", correct: false },
+        { text: "उन्हें कृष्ण का मार्गदर्शन चाहिए था — सेना नहीं", correct: true },
+        { text: "युधिष्ठिर ने कहा था", correct: false },
+        { text: "कृष्ण शक्तिशाली थे", correct: false }
+      ],
+      feedback: "अर्जुन ने कहा — 'आप सारथी बनें, बस यही काफी है।' यह भक्ति का सर्वोच्च उदाहरण है।"
+    },
+    {
+      shloka: "कृष्णः शांतिदूतः — हस्तिनापुरे।",
+      story: "<strong>कृष्ण</strong> शांतिदूत बनकर हस्तिनापुर गए। भोज में नहीं गए — केवल विदुर के घर भोजन किया।",
+      question: "कृष्ण ने दुर्योधन का भोज क्यों अस्वीकार किया?",
+      choices: [
+        { text: "खाना पसंद नहीं था", correct: false },
+        { text: "जो प्रेम से बुलाए उसका खाना खाएंगे — शत्रु का दिखावा नहीं", correct: true },
+        { text: "जल्दी थी", correct: false },
+        { text: "कुंती ने मना किया", correct: false }
+      ],
+      feedback: "कृष्ण ने कहा — 'विदुर मुझसे सच्चा प्रेम करते हैं।' उन्होंने विदुर के घर साग-भात खाया।"
+    },
+    {
+      shloka: "कर्णः कुन्तीं उवाच — पाञ्च पाण्डवाः।",
+      story: "<strong>कुंती</strong> ने कर्ण को सत्य बताया — 'तुम मेरे ज्येष्ठ पुत्र हो।' कर्ण के सामने भारी धर्मसंकट था।",
+      question: "कर्ण ने कुंती को क्या वचन दिया?",
+      choices: [
+        { text: "युद्ध नहीं करूँगा", correct: false },
+        { text: "अर्जुन के अलावा किसी पांडव को नहीं मारूँगा — 5 पांडव जीवित रहेंगे", correct: true },
+        { text: "दुर्योधन को छोड़ दूँगा", correct: false },
+        { text: "युद्ध से दूर रहूँगा", correct: false }
+      ],
+      feedback: "कर्ण ने कहा — 'पाँच पांडव हमेशा रहेंगे — चाहे अर्जुन मरे या मैं।' यही उनकी महानता थी।"
+    },
+    {
+      shloka: "दुर्योधनः — कृष्णं बन्दीकर्तुम् प्रयतते।",
+      story: "<strong>दुर्योधन</strong> ने कृष्ण को बंदी बनाने की कोशिश की।",
+      question: "कृष्ण को बंदी बनाने के प्रयास पर क्या हुआ?",
+      choices: [
+        { text: "कृष्ण भाग गए", correct: false },
+        { text: "कृष्ण ने विश्वरूप दिखाया — सभी भयभीत हो गए", correct: true },
+        { text: "भीष्म ने रोका", correct: false },
+        { text: "विदुर ने पहले बताया था", correct: false }
+      ],
+      feedback: "कृष्ण ने विराट रूप प्रकट किया — हजारों भुजाएँ, सूर्य-चंद्र नेत्र। सभी स्तब्ध हो गए।"
+    },
+    {
+      shloka: "इंद्रो ब्राह्मणवेषेण — कर्णस्य कवचकुण्डले।",
+      story: "<strong>कर्ण</strong> के जन्मजात कवच-कुंडल उन्हें अभेद्य बनाते थे। इंद्र ने उन्हें छल से लेने की योजना बनाई।",
+      question: "इंद्र ने कवच-कुंडल के बदले कर्ण को क्या दिया?",
+      choices: [
+        { text: "वज्र अस्त्र", correct: false },
+        { text: "'शक्ति' — एकबार प्रयोग होने वाला अमोघ अस्त्र", correct: true },
+        { text: "अमरत्व", correct: false },
+        { text: "अजेय धनुष", correct: false }
+      ],
+      feedback: "इंद्र ने 'शक्ति' दी — अजेय को भी मारने वाला। कर्ण इसे अर्जुन के लिए रखना चाहते थे पर घटोत्कच पर चलाना पड़ा।"
+    },
+    {
+      shloka: "कौरवसेना — एकादशाक्षौहिणी।",
+      story: "<strong>कौरवों</strong> के पास 11 अक्षौहिणी और <strong>पांडवों</strong> के पास 7 अक्षौहिणी सेना थी।",
+      question: "कौरवों का प्रथम सेनापति कौन था?",
+      choices: [
+        { text: "कर्ण", correct: false },
+        { text: "द्रोणाचार्य", correct: false },
+        { text: "भीष्म पितामह — 10 दिन", correct: true },
+        { text: "अश्वत्थामा", correct: false }
+      ],
+      feedback: "भीष्म (10 दिन), द्रोण (5 दिन), कर्ण (2 दिन), शल्य (1 दिन) — इस क्रम में सेनापति बने।"
+    },
+    {
+      shloka: "परशुरामशिष्यः कर्णः — शापग्रस्तः।",
+      story: "<strong>कर्ण</strong> ने परशुराम के पास ब्राह्मण बनकर विद्या सीखी। एक दिन उनकी जाँघ पर कीड़ा काटने लगा।",
+      question: "परशुराम ने कर्ण को शाप क्यों दिया?",
+      choices: [
+        { text: "युद्ध में धोखे के लिए", correct: false },
+        { text: "क्षत्रिय होते हुए ब्राह्मण बनकर विद्या चुराने के लिए", correct: true },
+        { text: "अपमान के लिए", correct: false },
+        { text: "बिना कारण", correct: false }
+      ],
+      feedback: "परशुराम ने शाप दिया — 'जब सबसे जरूरत होगी, मेरी विद्या भूल जाओगे।' यही कर्ण-अर्जुन युद्ध में हुआ।"
+    },
+    {
+      shloka: "युधिष्ठिरः — भीष्मद्रोणादिभ्यः आशीर्वादम्।",
+      story: "युद्ध से पहले <strong>युधिष्ठिर</strong> नंगे पाँव चलकर भीष्म, द्रोण, कृपाचार्य, शल्य से आशीर्वाद लेने गए।",
+      question: "भीष्म ने युधिष्ठिर को क्या आशीर्वाद और रहस्य दिया?",
+      choices: [
+        { text: "दुर्योधन की कमजोरी बताई", correct: false },
+        { text: "विजय का आशीर्वाद और बताया — शिखंडी ही मेरा अंत करेगा", correct: true },
+        { text: "युद्ध न करने की सलाह", correct: false },
+        { text: "कर्ण का रहस्य बताया", correct: false }
+      ],
+      feedback: "चारों वरिष्ठों ने कहा — 'हम लड़ेंगे कौरवों की ओर, पर विजय तुम्हारी होगी।' यह धर्म की विजय की घोषणा थी।"
+    },
+    {
+      shloka: "कृष्णः पाञ्चजन्यं — अर्जुनः देवदत्तम्।",
+      story: "युद्ध आरंभ में <strong>कृष्ण</strong> ने पाञ्चजन्य और <strong>अर्जुन</strong> ने देवदत्त शंख बजाया।",
+      question: "अर्जुन के रथ के घोड़े किस रंग के थे?",
+      choices: [
+        { text: "काले", correct: false },
+        { text: "सफेद (श्वेत)", correct: true },
+        { text: "भूरे", correct: false },
+        { text: "सोने के रंग के", correct: false }
+      ],
+      feedback: "अर्जुन के श्वेत (सफेद) घोड़े थे — इसीलिए उनका एक नाम 'श्वेतवाहन' भी है।"
+    },
+    {
+      shloka: "कर्णस्य मित्रता — दुर्योधनेन।",
+      story: "रंगभूमि में दुर्योधन ने कर्ण को <strong>अंग देश</strong> का राजा बनाया जब कर्ण को 'सूत-पुत्र' कहकर अपमानित किया गया।",
+      question: "दुर्योधन और कर्ण की मित्रता कब से थी?",
+      choices: [
+        { text: "बचपन से", correct: false },
+        { text: "रंगभूमि से — जब दुर्योधन ने कर्ण को अंग-राज बनाया", correct: true },
+        { text: "गुरुकुल से", correct: false },
+        { text: "युद्ध से एक दिन पहले", correct: false }
+      ],
+      feedback: "रंगभूमि में कर्ण के अपमान के समय दुर्योधन ने उन्हें अंग का राजा बनाया — उसी दिन से अटूट मित्रता।"
+    },
+    {
+      shloka: "संजयः उवाच — धृतराष्ट्राय।",
+      story: "<strong>संजय</strong> ने दिव्य दृष्टि से युद्ध देखकर <strong>धृतराष्ट्र</strong> को हर दिन का विवरण सुनाया।",
+      question: "महाभारत युद्ध का वर्णन किसने किसे सुनाया?",
+      choices: [
+        { text: "व्यास ने अर्जुन को", correct: false },
+        { text: "संजय ने धृतराष्ट्र को", correct: true },
+        { text: "कृष्ण ने युधिष्ठिर को", correct: false },
+        { text: "नारद ने देवताओं को", correct: false }
+      ],
+      feedback: "व्यास ने संजय को दिव्यदृष्टि दी। संजय ने हर रात धृतराष्ट्र को युद्ध की पूरी रिपोर्ट सुनाई। गीता भी इसी संवाद का हिस्सा है।"
+    },
+    {
+      shloka: "पाण्डवाः — पञ्चगाँवम् याचन्ते।",
+      story: "युधिष्ठिर ने दुर्योधन को संदेश भेजा — 'केवल 5 गाँव दे दो, युद्ध टल जाएगा।'",
+      question: "दुर्योधन ने 5 गाँव की माँग पर क्या कहा?",
+      choices: [
+        { text: "मान गया", correct: false },
+        { text: "'सुई की नोक जितनी जमीन भी नहीं दूँगा'", correct: true },
+        { text: "धृतराष्ट्र पर छोड़ दिया", correct: false },
+        { text: "सोचने का समय माँगा", correct: false }
+      ],
+      feedback: "दुर्योधन ने कहा — 'बिना युद्ध के एक कण भूमि भी नहीं।' यही युद्ध की अनिवार्यता का संकेत था।"
+    },
+    {
+      shloka: "द्रोणाचार्यः — अर्जुनस्य प्रियशिष्यः।",
+      story: "<strong>द्रोण</strong> ने कहा था — 'अर्जुन मेरे सबसे प्रिय शिष्य हैं।' पर युद्ध में वे कौरवों की तरफ से लड़ने को बाध्य थे।",
+      question: "द्रोण ने एकलव्य से गुरुदक्षिणा में अंगूठा क्यों माँगा?",
+      choices: [
+        { text: "दुश्मनी के कारण", correct: false },
+        { text: "अर्जुन को सर्वश्रेष्ठ रखने का वचन था", correct: true },
+        { text: "पैसे चाहिए थे", correct: false },
+        { text: "एकलव्य को सजा देने के लिए", correct: false }
+      ],
+      feedback: "द्रोण ने अर्जुन से वचन दिया था कि संसार में सबसे श्रेष्ठ धनुर्धर अर्जुन ही रहेंगे।"
+    },
+    {
+      shloka: "अर्जुनः — स्वर्गे दिव्यास्त्राणि प्राप्तवान्।",
+      story: "वनवास के दौरान अर्जुन ने हिमालय में तपस्या की। शिव से पाशुपतास्त्र मिला।",
+      question: "अर्जुन वनवास में अस्त्र लेने क्यों गए?",
+      choices: [
+        { text: "युधिष्ठिर ने भेजा", correct: false },
+        { text: "कृष्ण ने कहा — युद्ध के लिए दिव्यास्त्र चाहिए", correct: true },
+        { text: "इंद्र ने बुलाया", correct: false },
+        { text: "द्रोण का आदेश था", correct: false }
+      ],
+      feedback: "युधिष्ठिर और कृष्ण ने समझाया — भविष्य का युद्ध इतना बड़ा होगा कि सामान्य अस्त्रों से नहीं जीता जा सकता।"
+    },
+    {
+      shloka: "कृष्णः उवाच — धर्मयुद्धे जयो धर्मस्य।",
+      story: "<strong>कृष्ण</strong> ने हमेशा पांडवों को धर्म-युद्ध की प्रेरणा दी। उन्होंने कहा — जहाँ धर्म है वहाँ विजय है।",
+      question: "महाभारत के अंत में व्यास ने कहा — 'ऊर्ध्वबाहु विरौम्येष...' इसका क्या अर्थ है?",
+      choices: [
+        { text: "युद्ध जीत लिया", correct: false },
+        { text: "मैं हाथ उठाकर पुकारता हूँ — धर्म से अर्थ-काम मिलते हैं, फिर भी धर्म क्यों नहीं पालते?", correct: true },
+        { text: "महाभारत समाप्त हुई", correct: false },
+        { text: "शांति की प्रार्थना", correct: false }
+      ],
+      feedback: "महाभारत का अंतिम संदेश — धर्म सर्वोपरि है। धर्म से ही अर्थ और काम की प्राप्ति होती है।"
+    },
+    {
+      shloka: "घटोत्कचः — राक्षसवीरः भीमपुत्रः।",
+      story: "<strong>घटोत्कच</strong> भीम और हिडिम्बा का पुत्र था। राक्षस होने से वह रात को और भी शक्तिशाली बन जाता था।",
+      question: "घटोत्कच की मृत्यु से पांडवों को क्या लाभ हुआ?",
+      choices: [
+        { text: "कोई लाभ नहीं", correct: false },
+        { text: "कर्ण की 'शक्ति' समाप्त हो गई जो अर्जुन के लिए बची थी", correct: true },
+        { text: "कौरव डर गए", correct: false },
+        { text: "दुर्योधन की सेना कमजोर हुई", correct: false }
+      ],
+      feedback: "कर्ण ने घटोत्कच पर 'शक्ति' चला दी — वह अस्त्र जो अर्जुन के लिए रखा था। कृष्ण प्रसन्न हुए — अर्जुन बच गया।"
+    },
+    {
+      shloka: "कुंतीः — विदुरग्रहे।",
+      story: "युद्ध से पहले कृष्ण के हस्तिनापुर आगमन पर <strong>कुंती</strong> विदुर के घर मिलने आईं।",
+      question: "कुंती ने कृष्ण को क्या संदेश अपने पुत्रों के लिए दिया?",
+      choices: [
+        { text: "युद्ध मत करो", correct: false },
+        { text: "क्षत्रिय धर्म — दुःख में अनुकंपा नहीं, कर्तव्य पालो", correct: true },
+        { text: "संधि कर लो", correct: false },
+        { text: "मेरी याद रखो", correct: false }
+      ],
+      feedback: "कुंती ने कहा — 'जो वनवास और अज्ञातवास के कष्ट से नहीं डिगे, वे क्षत्रिय अब धर्मयुद्ध में पीछे नहीं हटेंगे।'"
+    },
+    {
+      shloka: "भीष्मः — दुर्योधनस्य प्रश्नस्य उत्तरम्।",
+      story: "दुर्योधन ने भीष्म से पूछा — 'आप प्रतिदिन कितने पांडव-सैनिक मार सकते हैं?'",
+      question: "भीष्म ने क्या उत्तर दिया?",
+      choices: [
+        { text: "10,000 प्रतिदिन", correct: false },
+        { text: "हर दिन 10,000 — पर अर्जुन और कृष्ण की रक्षा नहीं कर सकता", correct: true },
+        { text: "1,000 प्रतिदिन", correct: false },
+        { text: "पूरी सेना एक दिन में", correct: false }
+      ],
+      feedback: "भीष्म ने सच बोला — 'मेरे प्रयास होंगे, पर जब तक कृष्ण अर्जुन के साथ हैं, पांडव सेना को नष्ट नहीं कर सकता।'"
+    },
+    {
+      shloka: "अर्जुनः — स्वजनान् दृष्ट्वा विषीदति।",
+      story: "युद्धभूमि में अर्जुन ने देखा — सामने गुरु द्रोण, पितामह भीष्म, चाचा-ताऊ, भाई-बंधु।",
+      question: "अर्जुन ने शस्त्र रखने का मन किया क्योंकि?",
+      choices: [
+        { text: "वे डर गए", correct: false },
+        { text: "स्वजनों को मारकर मिलने वाले राज्य से अधिक मूल्यवान उनके प्राण लगे", correct: true },
+        { text: "कृष्ण ने मना किया", correct: false },
+        { text: "भीम ने कहा", correct: false }
+      ],
+      feedback: "यही अर्जुन-विषाद था जिसने गीता को जन्म दिया। मोह और धर्म के बीच का संघर्ष — जिसे कृष्ण ने सुलझाया।"
+    },
+    {
+      shloka: "द्रुपदः — पांडवमित्रम्।",
+      story: "<strong>द्रुपद</strong> पांडवों के मित्र थे। उन्होंने पांडवों की सेना में सहायता दी।",
+      question: "द्रुपद का पांडवों से क्या संबंध था?",
+      choices: [
+        { text: "युधिष्ठिर के मामा", correct: false },
+        { text: "द्रौपदी के पिता — इसलिए ससुर भी", correct: true },
+        { text: "केवल मित्र राजा", correct: false },
+        { text: "गुरु", correct: false }
+      ],
+      feedback: "द्रुपद द्रौपदी के पिता थे — इसलिए पांडवों के ससुर भी। उन्होंने 7 अक्षौहिणी सेना में योगदान दिया।"
+    },
+    {
+      shloka: "कृष्णः — युधिष्ठिरम् उवाच।",
+      story: "<strong>कृष्ण</strong> ने युधिष्ठिर को सदा सत्य-धर्म पर चलने की प्रेरणा दी।",
+      question: "कृष्ण ने 'यतो धर्मः ततो जयः' का क्या अर्थ बताया?",
+      choices: [
+        { text: "धर्म से युद्ध जीतते हैं", correct: false },
+        { text: "जहाँ धर्म है वहाँ विजय है — धर्म और जय अलग नहीं", correct: true },
+        { text: "धर्म का रास्ता कठिन है", correct: false },
+        { text: "विजय ही धर्म है", correct: false }
+      ],
+      feedback: "'यतो कृष्णस्ततो धर्मः, यतो धर्मस्ततो जयः' — जहाँ कृष्ण, वहाँ धर्म; जहाँ धर्म, वहाँ विजय।"
+    },
+    {
+      shloka: "विदुरः — पांडवपक्षधरः।",
+      story: "<strong>विदुर</strong> ने हमेशा पांडवों का पक्ष लिया। युद्ध से पहले दुर्योधन ने उन्हें निकाल दिया।",
+      question: "युद्ध के बाद विदुर का क्या हुआ?",
+      choices: [
+        { text: "हस्तिनापुर के मंत्री बने", correct: false },
+        { text: "धृतराष्ट्र-गांधारी के साथ वन गए और वहीं देह त्यागी", correct: true },
+        { text: "युधिष्ठिर के मंत्री बने", correct: false },
+        { text: "तीर्थयात्रा पर गए", correct: false }
+      ],
+      feedback: "युद्ध के बाद विदुर धृतराष्ट्र-गांधारी के साथ वन में गए। वहाँ युधिष्ठिर से मिले और देह त्यागी।"
+    }
+  ]
+},
+
+// ── Chapter 3 : भीष्म व द्रोण पर्व ──────────────────────
+{
+  id: 3, name: "Bhishma & Drona Parva", hindi: "भीष्म व द्रोण पर्व", emoji: "⚔️",
+  desc: "गीता का उपदेश, भीष्म की शरशैया, चक्रव्यूह में अभिमन्यु, द्रोणाचार्य का वध।",
+  unlocked: true,
+  questions: [
+    {
+      shloka: "धर्मक्षेत्रे कुरुक्षेत्रे समवेता युयुत्सवः।",
+      story: "<strong>अर्जुन</strong> ने स्वजनों को देखकर शस्त्र रख दिए। <strong>कृष्ण</strong> ने 18 अध्यायों में गीता का उपदेश दिया।",
+      question: "गीता में कृष्ण ने 'कर्म' के बारे में क्या कहा?",
+      choices: [
+        { text: "फल की इच्छा से कर्म करो", correct: false },
+        { text: "युद्ध मत करो", correct: false },
+        { text: "कर्म करते रहो, फल की चिंता मत करो", correct: true },
+        { text: "परिवार धर्म से बड़ा है", correct: false }
+      ],
+      feedback: "'कर्मण्येवाधिकारस्ते मा फलेषु कदाचन' — कर्म करना तुम्हारा अधिकार है, फल की चिंता मत करो।"
+    },
+    {
+      shloka: "भीष्मः शरशय्यायां — इच्छामृत्युधारी।",
+      story: "<strong>शिखंडी</strong> को सामने रखकर अर्जुन ने भीष्म पर बाण बरसाए। भीष्म शरशैया पर गिरे।",
+      question: "भीष्म ने कितने दिन शरशैया पर लेटकर उत्तरायण की प्रतीक्षा की?",
+      choices: [
+        { text: "10 दिन", correct: false },
+        { text: "58 दिन", correct: true },
+        { text: "21 दिन", correct: false },
+        { text: "1 वर्ष", correct: false }
+      ],
+      feedback: "58 दिन शरशैया पर लेटे रहे और युधिष्ठिर को राजधर्म का उपदेश दिया। मकर संक्रांति पर स्वेच्छा से प्राण त्यागे।"
+    },
+    {
+      shloka: "चक्रव्यूहे अभिमन्युः — एकाकी युद्धम्।",
+      story: "<strong>अभिमन्यु</strong> (16 वर्षीय) अकेले चक्रव्यूह में घुसे। जयद्रथ ने द्वार बंद किया।",
+      question: "अभिमन्यु को चक्रव्यूह में घुसना कैसे पता था?",
+      choices: [
+        { text: "कृष्ण ने सिखाया", correct: false },
+        { text: "माँ के गर्भ में अर्जुन से सुना — माँ बीच में सो गई", correct: true },
+        { text: "द्रोण ने सिखाया", correct: false },
+        { text: "स्वयं सीखा", correct: false }
+      ],
+      feedback: "अर्जुन सुभद्रा को बता रहे थे — गर्भस्थ अभिमन्यु ने घुसना सीखा, निकलना नहीं। इसीलिए फंसे।"
+    },
+    {
+      shloka: "जयद्रथवधः — अर्जुनस्य प्रतिज्ञा।",
+      story: "अभिमन्यु-वध के बाद अर्जुन ने प्रतिज्ञा ली — 'अगले दिन सूर्यास्त से पहले जयद्रथ को मारूँगा।'",
+      question: "कृष्ण ने जयद्रथ वध में क्या लीला की?",
+      choices: [
+        { text: "जयद्रथ को प्रकट किया", correct: false },
+        { text: "सुदर्शन चक्र से सूर्य ढककर नकली सूर्यास्त — जयद्रथ बाहर आया, फिर चक्र हटाया", correct: true },
+        { text: "जयद्रथ का मनोबल तोड़ा", correct: false },
+        { text: "जयद्रथ को अर्जुन के पास धकेला", correct: false }
+      ],
+      feedback: "नकली सूर्यास्त होते देख जयद्रथ खुशी से बाहर आया। कृष्ण ने चक्र हटाया — अर्जुन ने एक बाण से सिर काटा।"
+    },
+    {
+      shloka: "अश्वत्थामा हतः — नरो वा कुंजरो वा।",
+      story: "<strong>द्रोण</strong> को पुत्रमोह था। भीम ने 'अश्वत्थामा' नामक हाथी को मारकर कहा — 'अश्वत्थामा मर गया।'",
+      question: "युधिष्ठिर ने क्या कहा और उसका क्या परिणाम हुआ?",
+      choices: [
+        { text: "'हाँ, अश्वत्थामा मरा' — झूठ बोला", correct: false },
+        { text: "'अश्वत्थामा मरा — नरो वा कुंजरो वा' — कृष्ण ने शंख बजाया, आखिरी शब्द दब गए", correct: true },
+        { text: "कुछ नहीं बोले", correct: false },
+        { text: "सच बता दिया", correct: false }
+      ],
+      feedback: "युधिष्ठिर का रथ जमीन पर आ गया। धृष्टद्युम्न ने शस्त्रहीन ध्यानस्थ द्रोण का वध किया।"
+    },
+    {
+      shloka: "अभिमन्युः — वीरः, षोडशवर्षः।",
+      story: "चक्रव्यूह में <strong>अभिमन्यु</strong> ने अकेले 7 महारथियों से लड़ाई की। जब शस्त्र टूटे तो रथ-चक्र से लड़े।",
+      question: "अभिमन्यु के वध के बाद अर्जुन ने क्या प्रतिज्ञा ली?",
+      choices: [
+        { text: "युद्ध छोड़ दूँगा", correct: false },
+        { text: "अगले दिन सूर्यास्त तक जयद्रथ को मारूँगा, नहीं तो अग्नि में प्रवेश", correct: true },
+        { text: "दुर्योधन को मारूँगा", correct: false },
+        { text: "कर्ण को पहले मारूँगा", correct: false }
+      ],
+      feedback: "यह कुरुक्षेत्र की सबसे भावुक प्रतिज्ञा थी — अर्जुन का पुत्र-शोक और क्षत्रिय-धर्म का संगम।"
+    },
+    {
+      shloka: "गीतायाः सारम् — निष्कामकर्म।",
+      story: "गीता का सबसे प्रसिद्ध श्लोक — <em>'कर्मण्येवाधिकारस्ते मा फलेषु कदाचन।'</em>",
+      question: "गीता में कुल कितने अध्याय और श्लोक हैं?",
+      choices: [
+        { text: "16 अध्याय, 500 श्लोक", correct: false },
+        { text: "18 अध्याय, 700 श्लोक", correct: true },
+        { text: "12 अध्याय, 400 श्लोक", correct: false },
+        { text: "21 अध्याय, 1000 श्लोक", correct: false }
+      ],
+      feedback: "गीता में 18 अध्याय और 700 श्लोक हैं। युद्ध के मैदान में कहा गया — संसार का सबसे महान दर्शन।"
+    },
+    {
+      shloka: "भीष्मपर्वणि — शिखंडी पुरस्कृतः।",
+      story: "<strong>शिखंडी</strong> पूर्वजन्म में अंबा था। भीष्म ने प्रतिज्ञा ली थी — नारी या नामधारी नपुंसक पर शस्त्र नहीं।",
+      question: "अंबा का अगले जन्म में शिखंडी बनने का कारण क्या था?",
+      choices: [
+        { text: "श्राप के कारण", correct: false },
+        { text: "भीष्म-वध की प्रतिज्ञा के साथ तपस्या से", correct: true },
+        { text: "दैवीय इच्छा", correct: false },
+        { text: "परशुराम का आशीर्वाद", correct: false }
+      ],
+      feedback: "अंबा ने भीष्म-वध की प्रतिज्ञा ली और घोर तपस्या की। शिव ने वरदान दिया — अगले जन्म में भीष्म-वधकर्ता बनोगी।"
+    },
+    {
+      shloka: "द्रोणाचार्यः — ब्राह्मणवीरः।",
+      story: "<strong>द्रोण</strong> ब्राह्मण थे पर युद्धकला में निपुण। उन्होंने 18000 सैनिकों को प्रशिक्षित किया।",
+      question: "द्रोण को किसने मारा?",
+      choices: [
+        { text: "भीम ने", correct: false },
+        { text: "अर्जुन ने", correct: false },
+        { text: "धृष्टद्युम्न ने", correct: true },
+        { text: "युधिष्ठिर ने", correct: false }
+      ],
+      feedback: "धृष्टद्युम्न (द्रुपद-पुत्र) का जन्म ही द्रोण-वध के लिए हुआ था — यज्ञ से जन्मे। नियति पूरी हुई।"
+    },
+    {
+      shloka: "विश्वरूपदर्शनम् — गीता एकादशाध्यायः।",
+      story: "अर्जुन ने कृष्ण से विश्वरूप दर्शन की प्रार्थना की। कृष्ण ने दिव्य दृष्टि देकर विश्वरूप दिखाया।",
+      question: "विश्वरूप देखकर अर्जुन ने क्या अनुभव किया?",
+      choices: [
+        { text: "युद्ध का उत्साह मिला", correct: false },
+        { text: "भयभीत हुए — हजार सूर्यों का तेज, मुख में सेनाएँ, काल-स्वरूप देखा", correct: true },
+        { text: "मोक्ष मिला", correct: false },
+        { text: "तुरंत युद्ध के लिए तैयार हुए", correct: false }
+      ],
+      feedback: "अर्जुन ने कहा — 'दिशाएँ नहीं दिख रहीं, हे कृष्ण पुनः अपना सौम्य रूप दिखाइए।' यह 11वाँ अध्याय है।"
+    },
+    {
+      shloka: "घटोत्कचः — रात्रौ अधिकशक्तिमान्।",
+      story: "रात के युद्ध में <strong>घटोत्कच</strong> ने कौरव सेना पर भारी कहर ढाया। दुर्योधन घबरा गए।",
+      question: "कर्ण ने घटोत्कच पर 'शक्ति' क्यों चलाई?",
+      choices: [
+        { text: "घटोत्कच से दुश्मनी थी", correct: false },
+        { text: "घटोत्कच से पूरी सेना बचाने के लिए — वरना बहुत नुकसान होता", correct: true },
+        { text: "दुर्योधन ने आदेश दिया", correct: false },
+        { text: "गलती से चल गई", correct: false }
+      ],
+      feedback: "घटोत्कच की माया से हजारों सैनिक मर रहे थे। कर्ण ने विवश होकर 'शक्ति' चलाई — अर्जुन के लिए बचाई थी वह।"
+    },
+    {
+      shloka: "सर्वधर्मान् परित्यज्य — मामेकं शरणं व्रज।",
+      story: "गीता का अंतिम और सर्वोच्च उपदेश — <em>'सर्वधर्मान् परित्यज्य मामेकं शरणं व्रज।'</em>",
+      question: "इस श्लोक का क्या अर्थ है?",
+      choices: [
+        { text: "सभी धर्म छोड़ दो", correct: false },
+        { text: "सभी आसक्तियाँ छोड़कर ईश्वर की शरण लो — मैं सब पापों से मुक्त करूँगा", correct: true },
+        { text: "युद्ध करो", correct: false },
+        { text: "संन्यास लो", correct: false }
+      ],
+      feedback: "यह गीता का 'चरम श्लोक' है — पूर्ण समर्पण का मार्ग। 'मा शुचः' — चिंता मत करो, मैं तुम्हारी रक्षा करूँगा।"
+    },
+    {
+      shloka: "कृष्णः — पाञ्चजन्यं शंखम् अवादयत्।",
+      story: "युद्ध के पहले दिन दोनों सेनाओं ने शंख बजाए। कृष्ण का पाञ्चजन्य सबसे पहले और सबसे तेज बजा।",
+      question: "कौरवों की ओर से पहले शंख किसने बजाया?",
+      choices: [
+        { text: "दुर्योधन ने", correct: false },
+        { text: "भीष्म ने — सिंहनाद के साथ", correct: true },
+        { text: "कर्ण ने", correct: false },
+        { text: "द्रोण ने", correct: false }
+      ],
+      feedback: "भीष्म ने सिंहनाद करके शंख बजाया — फिर सभी ने। उसके जवाब में कृष्ण ने पाञ्चजन्य और अर्जुन ने देवदत्त बजाया।"
+    },
+    {
+      shloka: "अर्जुनः विषीदति — विषादयोगः।",
+      story: "गीता का पहला अध्याय 'अर्जुन-विषाद योग' — अर्जुन का मोह और कृष्ण का प्रथम उत्तर।",
+      question: "कृष्ण ने अर्जुन को सबसे पहले क्या कहा?",
+      choices: [
+        { text: "युद्ध करो — यह तुम्हारा कर्तव्य है", correct: false },
+        { text: "'तुम मोहग्रस्त हो — यह क्षत्रिय का काम नहीं'", correct: true },
+        { text: "गीता का उपदेश शुरू किया", correct: false },
+        { text: "विश्वरूप दिखाया", correct: false }
+      ],
+      feedback: "कृष्ण ने पहले तर्क से कहा — 'यह कायरता है, उठो।' जब अर्जुन नहीं माने तब विस्तृत गीता उपदेश दिया।"
+    },
+    {
+      shloka: "नारायणास्त्रं — अश्वत्थाम्ना मुक्तम्।",
+      story: "द्रोण के वध के बाद <strong>अश्वत्थामा</strong> ने क्रोध में <strong>नारायणास्त्र</strong> चलाया।",
+      question: "नारायणास्त्र से बचने का उपाय क्या था?",
+      choices: [
+        { text: "उस पर अस्त्र चलाना", correct: false },
+        { text: "शस्त्र रखकर रथ से उतर जाना — समर्पण करने पर अस्त्र छोड़ देता है", correct: true },
+        { text: "भागना", correct: false },
+        { text: "कृष्ण के पीछे छुपना", correct: false }
+      ],
+      feedback: "कृष्ण ने सबको शस्त्र रखने को कहा। भीम नहीं माने — कृष्ण और अर्जुन ने मिलकर जबरदस्ती उन्हें रथ से उतारा।"
+    },
+    {
+      shloka: "द्रोणाचार्यः — पुत्रमोहग्रस्तः।",
+      story: "द्रोण के पुत्र <strong>अश्वत्थामा</strong> की मृत्यु का समाचार सुनकर उनका मन टूट गया।",
+      question: "द्रोण के प्रति भीम का व्यवहार किस कारण कड़वा था?",
+      choices: [
+        { text: "द्रोण ने भीम को नहीं सिखाया", correct: false },
+        { text: "द्रोण ने एकलव्य से अंगूठा माँगा था जो भीम को अन्याय लगा", correct: true },
+        { text: "भीम और द्रोण की पुरानी दुश्मनी थी", correct: false },
+        { text: "द्रोण ने अर्जुन को अधिक प्यार दिया", correct: false }
+      ],
+      feedback: "भीम एकलव्य के अंगूठे वाले प्रकरण को अन्याय मानते थे। उन्हें लगा द्रोण ने जन्म के कारण भेदभाव किया।"
+    },
+    {
+      shloka: "भीष्मः — शरशय्यायाम् राजधर्मम् उपादिशत्।",
+      story: "शरशैया पर लेटे भीष्म ने <strong>युधिष्ठिर</strong> को राजधर्म, अपत्तिधर्म, मोक्षधर्म का उपदेश दिया।",
+      question: "भीष्म ने 'सर्वोत्तम दान' क्या बताया?",
+      choices: [
+        { text: "स्वर्णदान", correct: false },
+        { text: "विद्यादान", correct: false },
+        { text: "अभयदान — किसी को भय से मुक्त करना", correct: true },
+        { text: "अन्नदान", correct: false }
+      ],
+      feedback: "भीष्म ने कहा — अभयदान सर्वश्रेष्ठ है। किसी के भय और संकट को दूर करना सोने से बड़ा दान है।"
+    },
+    {
+      shloka: "पाशुपतास्त्रम् — अर्जुनाय शिवेन दत्तम्।",
+      story: "वनवास के दौरान अर्जुन की तपस्या से प्रसन्न होकर <strong>शिव</strong> ने उन्हें पाशुपतास्त्र दिया।",
+      question: "पाशुपतास्त्र की विशेषता क्या थी?",
+      choices: [
+        { text: "सौ बार चला सकते थे", correct: false },
+        { text: "इसे केवल शिव द्वारा दी गई दिव्यदृष्टि से चला सकते थे — अजेय अस्त्र", correct: true },
+        { text: "केवल दानवों पर काम करता था", correct: false },
+        { text: "अदृश्य हो जाता था", correct: false }
+      ],
+      feedback: "पाशुपतास्त्र शिव का सर्वोच्च अस्त्र था — त्रिलोक को नष्ट कर सके। अर्जुन ने इसे युद्ध में उचित समय पर ही उपयोग किया।"
+    },
+    {
+      shloka: "नकुलः-सहदेवौ — माद्रीपुत्रौ।",
+      story: "<strong>नकुल</strong> और <strong>सहदेव</strong> युद्ध में वीरता से लड़े। नकुल असाधारण सुंदर और सहदेव असाधारण बुद्धिमान थे।",
+      question: "नकुल किस विद्या में सर्वश्रेष्ठ थे?",
+      choices: [
+        { text: "धनुर्विद्या", correct: false },
+        { text: "अश्वविद्या — घोड़ों की देखभाल और प्रशिक्षण", correct: true },
+        { text: "गदायुद्ध", correct: false },
+        { text: "ज्योतिष", correct: false }
+      ],
+      feedback: "नकुल अश्वविद्या में श्रेष्ठ थे। अज्ञातवास में वे 'ग्रंथिक' नाम से अश्वपालक बने। सहदेव गाय-पालन और ज्योतिष जानते थे।"
+    }
+  ]
+},
+
+// ── Chapter 4 : कर्ण, शल्य व सौप्तिक पर्व ──────────────
+{
+  id: 4, name: "Karna & Sauptika", hindi: "कर्ण, शल्य व सौप्तिक पर्व", emoji: "🌅",
+  desc: "दानवीर कर्ण का वध, गदायुद्ध में दुर्योधन का पतन, अश्वत्थामा का रात्रि-प्रतिशोध।",
+  unlocked: true,
+  questions: [
+    {
+      shloka: "कर्णः वसुषेणः — दानवीरः शूरपुत्रः।",
+      story: "<strong>कर्ण</strong> — सूत पुत्र का अपमान, परशुराम का शाप, इंद्र का छल — फिर भी दानवीर और महाशूर।",
+      question: "कर्ण के रथ का पहिया जमीन में क्यों धँसा?",
+      choices: [
+        { text: "जमीन कमजोर थी", correct: false },
+        { text: "परशुराम के शाप और भूमिदेवी के शाप के कारण", correct: true },
+        { text: "कृष्ण की माया", correct: false },
+        { text: "अर्जुन के बाण से", correct: false }
+      ],
+      feedback: "दो शाप एक साथ काम किए — परशुराम का 'विद्या भूल जाएगी' और भूमिदेवी का 'रथ फँस जाएगा।'"
+    },
+    {
+      shloka: "गदायुद्धे भीम-दुर्योधनयोः अंतिमः संग्रामः।",
+      story: "18वें दिन <strong>दुर्योधन</strong> घायल होकर तालाब में छुप गए। युधिष्ठिर ने ललकारा।",
+      question: "भीम ने दुर्योधन को कैसे मारा?",
+      choices: [
+        { text: "सिर पर गदा से", correct: false },
+        { text: "जाँघ पर गदा से — जो नियम विरुद्ध था पर प्रतिज्ञा-पूर्ति थी", correct: true },
+        { text: "बाण से", correct: false },
+        { text: "निहत्थे पर", correct: false }
+      ],
+      feedback: "भीम ने द्रौपदी के अपमान की प्रतिज्ञा पूरी की। बलराम क्रोधित हुए — पर कृष्ण ने शांत किया।"
+    },
+    {
+      shloka: "अश्वत्थामा — ब्रह्मास्त्रं पाण्डवसंहाराय।",
+      story: "रात में <strong>अश्वत्थामा</strong> ने पांडव-शिविर में घुसकर <strong>द्रौपदी के पाँचों पुत्रों</strong> को मारा।",
+      question: "अश्वत्थामा के ब्रह्मास्त्र का सामना कैसे हुआ?",
+      choices: [
+        { text: "अर्जुन ने काट दिया", correct: false },
+        { text: "अर्जुन ने प्रत्यस्त्र छोड़ा — व्यास ने दोनों शांत कराए, अश्वत्थामा की मणि ली", correct: true },
+        { text: "माफ कर दिया", correct: false },
+        { text: "व्यास ने रोका", correct: false }
+      ],
+      feedback: "कृष्ण ने अश्वत्थामा को शाप दिया — '3000 वर्ष वनों में भटकोगे, घावों से पीप बहेगी।' कुछ लोग मानते हैं वे आज भी जीवित हैं।"
+    },
+    {
+      shloka: "परीक्षितः — उत्तरायाः गर्भे आसीत्।",
+      story: "अश्वत्थामा के ब्रह्मास्त्र से <strong>उत्तरा</strong> का गर्भ नष्ट होने लगा। कृष्ण ने पुण्यों से उसके पुत्र को जीवित किया।",
+      question: "उत्तरा के पुत्र का क्या नाम था?",
+      choices: [
+        { text: "जनमेजय", correct: false },
+        { text: "परीक्षित — जिन्हें परमात्मा ने जीवित परखा", correct: true },
+        { text: "विक्रमादित्य", correct: false },
+        { text: "भीमसेन", correct: false }
+      ],
+      feedback: "राजा परीक्षित! उनके पुत्र जनमेजय के दरबार में वैशंपायन ने महाभारत सुनाई। परीक्षित को तक्षक नाग के डसने का श्राप था।"
+    },
+    {
+      shloka: "स्वर्गारोहण पर्व — पाण्डवानां अंतिम यात्रा।",
+      story: "<strong>युधिष्ठिर</strong> ने परीक्षित को राज सौंपा। पांडव हिमालय की ओर चले — एक-एक करके गिरते गए।",
+      question: "स्वर्ग के द्वार पर युधिष्ठिर ने क्या किया जब इंद्र ने कुत्ते को छोड़ने को कहा?",
+      choices: [
+        { text: "कुत्ते को छोड़ दिया", correct: false },
+        { text: "मना किया — 'जो साथ रहा उसे स्वर्ग के लिए नहीं छोड़ूँगा'", correct: true },
+        { text: "इंद्र से लड़े", correct: false },
+        { text: "वापस लौटे", correct: false }
+      ],
+      feedback: "वह कुत्ता साक्षात् धर्मराज थे। युधिष्ठिर की इस परीक्षा में विजय से वे सशरीर स्वर्ग गए।"
+    },
+    {
+      shloka: "गांधारी — पुत्रशोकविदग्धा।",
+      story: "<strong>गांधारी</strong> ने 100 पुत्र खोए। उनका दुख असीम था। जब युधिष्ठिर मिले, गांधारी की दृष्टि से उनके नख काले पड़े।",
+      question: "गांधारी ने कृष्ण को क्या शाप दिया?",
+      choices: [
+        { text: "कोई शाप नहीं", correct: false },
+        { text: "यादव वंश नष्ट होगा और तुम मामूली शिकारी के बाण से मारे जाओगे", correct: true },
+        { text: "अंधे हो जाओगे", correct: false },
+        { text: "राज्य नष्ट होगा", correct: false }
+      ],
+      feedback: "गांधारी का शाप सत्य हुआ — 36 वर्ष बाद प्रभास में यादव आपस में मरे, कृष्ण जरा व्याध के बाण से देह त्यागने पर विवश हुए।"
+    },
+    {
+      shloka: "धृतराष्ट्रः — भीमस्य आलिंगनाय।",
+      story: "युद्ध के बाद <strong>धृतराष्ट्र</strong> ने भीम को आलिंगन के लिए बुलाया। कृष्ण को शंका हुई।",
+      question: "कृष्ण ने भीम की जगह क्या आगे किया?",
+      choices: [
+        { text: "खुद खड़े हो गए", correct: false },
+        { text: "लोहे की मूर्ति — जो धृतराष्ट्र के आलिंगन से चूर-चूर हो गई", correct: true },
+        { text: "पत्थर की मूर्ति", correct: false },
+        { text: "अर्जुन को भेजा", correct: false }
+      ],
+      feedback: "लोहे की मूर्ति टुकड़े-टुकड़े हो गई — पुत्र-शोक से धृतराष्ट्र की शक्ति इतनी प्रचंड थी। व्यास ने शांत किया।"
+    },
+    {
+      shloka: "कर्णस्य वीरगतिः — सूर्ये विलीनः।",
+      story: "कर्ण की मृत्यु के समय उनके शरीर से सोने की रोशनी निकली जो सूर्य में मिल गई।",
+      question: "कर्ण की वीरगति पर कृष्ण की क्या प्रतिक्रिया थी?",
+      choices: [
+        { text: "प्रसन्न हुए", correct: false },
+        { text: "कर्ण की प्रशंसा की — 'संसार का सबसे बड़ा दानवीर और शूर'", correct: true },
+        { text: "उदासीन रहे", correct: false },
+        { text: "युद्ध रोकने को कहा", correct: false }
+      ],
+      feedback: "कृष्ण ने कहा — 'कर्ण के बराबर दानी और मित्र नहीं था।' कुंती ने जाकर सत्य बताया — युधिष्ठिर माँ से क्रोधित हुए।"
+    },
+    {
+      shloka: "महाभारतस्य सारम् — धर्म एव जयते।",
+      story: "18 दिन के महायुद्ध के बाद <strong>पांडवों</strong> की विजय हुई पर वे खुश नहीं थे — इतने स्वजन खो दिए।",
+      question: "महाभारत का अंतिम संदेश क्या है?",
+      choices: [
+        { text: "'युद्ध से शांति मिलती है'", correct: false },
+        { text: "'धर्मो रक्षति रक्षितः' — धर्म उसकी रक्षा करता है जो धर्म की रक्षा करे", correct: true },
+        { text: "'राज्य ही जीवन का लक्ष्य है'", correct: false },
+        { text: "'बल ही सर्वोच्च है'", correct: false }
+      ],
+      feedback: "महाभारत का सार — जहाँ धर्म है वहाँ विजय है। 'यतो कृष्णः ततो धर्मः, यतो धर्मस्ततो जयः।'"
+    },
+    {
+      shloka: "युधिष्ठिरः — राज्याभिषिक्तः।",
+      story: "युद्ध के बाद <strong>युधिष्ठिर</strong> का हस्तिनापुर में राज्याभिषेक हुआ। उन्होंने 36 वर्षों तक धर्मपूर्वक राज किया।",
+      question: "युधिष्ठिर ने राज छोड़ने का निर्णय कब लिया?",
+      choices: [
+        { text: "भीम के कहने पर", correct: false },
+        { text: "जब कृष्ण की मृत्यु हुई और यादव वंश नष्ट हुआ — कलियुग आने का संकेत", correct: true },
+        { text: "36 साल बाद अपने आप", correct: false },
+        { text: "अर्जुन के कहने पर", correct: false }
+      ],
+      feedback: "जब कृष्ण गए और यादव वंश नष्ट हुआ — युधिष्ठिर ने कहा, 'कलियुग आ गया।' परीक्षित को राज सौंपा और महाप्रस्थान किया।"
+    },
+    {
+      shloka: "कर्णस्य पुत्रः वृषसेनः।",
+      story: "<strong>कर्ण</strong> के पुत्र वृषसेन ने भी वीरता से युद्ध किया। उसका वध नकुल और अर्जुन ने किया।",
+      question: "कर्ण की मृत्यु के बाद कौरवों का मनोबल कैसा रहा?",
+      choices: [
+        { text: "अटूट रहा", correct: false },
+        { text: "पूरी तरह टूट गया — दुर्योधन अकेला पड़ गया", correct: true },
+        { text: "अश्वत्थामा ने संभाला", correct: false },
+        { text: "शल्य ने प्रेरणा दी", correct: false }
+      ],
+      feedback: "कर्ण के जाने से कौरव सेना बिखर गई। दुर्योधन का अंतिम सहारा गया था।"
+    },
+    {
+      shloka: "अश्वत्थामाशापः — चिरंजीवी।",
+      story: "कृष्ण ने अश्वत्थामा को अमरत्व का शाप दिया — 3000 वर्ष वनों में भटकोगे।",
+      question: "अश्वत्थामा किन 7 चिरंजीवियों में से एक माने जाते हैं?",
+      choices: [
+        { text: "हाँ — अश्वत्थामा, बलि, व्यास, हनुमान, विभीषण, कृपाचार्य, परशुराम", correct: true },
+        { text: "नहीं, वे चिरंजीवी नहीं", correct: false },
+        { text: "केवल 3 चिरंजीवी हैं", correct: false },
+        { text: "भीष्म भी चिरंजीवी हैं", correct: false }
+      ],
+      feedback: "7 चिरंजीवी: अश्वत्थामा, राजा बलि, वेदव्यास, हनुमान, विभीषण, कृपाचार्य, परशुराम। ये आज भी जीवित माने जाते हैं।"
+    },
+    {
+      shloka: "महाप्रस्थाने — द्रौपदी प्रथमं पतिता।",
+      story: "हिमालय यात्रा में <strong>द्रौपदी</strong> सबसे पहले गिरीं। <strong>भीम</strong> ने पूछा — क्यों?",
+      question: "द्रौपदी के पहले गिरने का कारण क्या बताया युधिष्ठिर ने?",
+      choices: [
+        { text: "थकान", correct: false },
+        { text: "पाँचों पतियों में अर्जुन के प्रति पक्षपात था", correct: true },
+        { text: "उनका समय आ गया था", correct: false },
+        { text: "कोई पाप किया था", correct: false }
+      ],
+      feedback: "युधिष्ठिर ने कहा — 'द्रौपदी पाँचों में अर्जुन को अधिक प्रेम करती थीं — यह पक्षपात था।' बाकी भाइयों के गिरने के भी कारण बताए।"
+    },
+    {
+      shloka: "श्वानः — धर्मराजावतारः।",
+      story: "केवल युधिष्ठिर और एक श्वान स्वर्ग-यात्रा पर। इंद्र रथ लेकर आए।",
+      question: "वह श्वान (कुत्ता) वास्तव में कौन था?",
+      choices: [
+        { text: "एक सामान्य कुत्ता", correct: false },
+        { text: "साक्षात् धर्मराज (यम) — अंतिम परीक्षा लेने के लिए", correct: true },
+        { text: "भीम का रूप", correct: false },
+        { text: "कृष्ण का रूप", correct: false }
+      ],
+      feedback: "युधिष्ठिर ने स्वर्ग की जगह कुत्ते को चुना — तब धर्मराज प्रकट हुए और बोले — 'तुम परीक्षा में उत्तीर्ण हुए।'"
+    },
+    {
+      shloka: "स्वर्गे — दुर्योधनः दृष्टः।",
+      story: "स्वर्ग पहुँचकर युधिष्ठिर ने <strong>दुर्योधन</strong> को वहाँ देखा — वे क्रोधित हुए।",
+      question: "स्वर्ग में दुर्योधन को देखकर युधिष्ठिर को क्या बताया गया?",
+      choices: [
+        { text: "दुर्योधन को गलती से स्वर्ग मिला", correct: false },
+        { text: "क्षत्रिय-धर्म से युद्धभूमि में मरने पर स्वर्ग मिलता है — दुर्योधन भी योद्धा था", correct: true },
+        { text: "कृष्ण ने माफ कर दिया", correct: false },
+        { text: "यह भ्रम था", correct: false }
+      ],
+      feedback: "देवताओं ने कहा — 'क्षत्रिय धर्म से लड़ने पर स्वर्ग मिलता है।' दुर्योधन ने वीरता से युद्ध किया था।"
+    },
+    {
+      shloka: "कर्णः — अर्जुनेन हतः।",
+      story: "कर्ण-अर्जुन का महायुद्ध हुआ। रथ का पहिया फँसा — कर्ण निहत्थे थे।",
+      question: "कृष्ण ने अर्जुन को कर्ण पर बाण चलाने के लिए क्या तर्क दिया?",
+      choices: [
+        { text: "'यह सही समय है'", correct: false },
+        { text: "'जब द्रौपदी को निर्वस्त्र किया तब धर्म कहाँ था — अब धर्म की बात करते हो?'", correct: true },
+        { text: "'मेरी आज्ञा मानो'", correct: false },
+        { text: "'युद्ध में नियम नहीं होते'", correct: false }
+      ],
+      feedback: "कृष्ण ने कर्ण के धर्म की बात पर उन्हें द्रौपदी-अपमान और अभिमन्यु-वध की याद दिलाई। अर्जुन ने बाण चलाया।"
+    },
+    {
+      shloka: "युयुत्सुः — कौरवपक्षतः पांडवपक्षं जगाम।",
+      story: "<strong>युयुत्सु</strong> धृतराष्ट्र का पुत्र था — एक वैश्य से जन्मा। वह अकेला कौरव था जिसने युद्ध में पांडवों का साथ दिया।",
+      question: "युयुत्सु को महाभारत में क्यों विशेष माना जाता है?",
+      choices: [
+        { text: "वह सबसे बलवान था", correct: false },
+        { text: "उसने अन्याय के विरुद्ध खड़े होकर भाइयों का साथ छोड़ा — धर्म चुना", correct: true },
+        { text: "वह कृष्ण का भक्त था", correct: false },
+        { text: "उसने युद्ध से बचाव किया", correct: false }
+      ],
+      feedback: "युयुत्सु ने सच्चाई और धर्म को भाई-बंधु से ऊपर रखा। इसीलिए युद्ध के बाद परीक्षित के पालन-पोषण की जिम्मेदारी उन्हें दी गई।"
+    },
+    {
+      shloka: "दुर्योधनः — जलस्तम्भनविद्या।",
+      story: "18वें दिन <strong>दुर्योधन</strong> एक तालाब में छुप गए — जल-स्तम्भन विद्या से।",
+      question: "दुर्योधन तालाब से बाहर क्यों आए?",
+      choices: [
+        { text: "भूख लगी थी", correct: false },
+        { text: "युधिष्ठिर ने ललकारा और क्षत्रिय-धर्म की याद दिलाई", correct: true },
+        { text: "व्यास जी ने कहा", correct: false },
+        { text: "पानी ख़त्म हो गया", correct: false }
+      ],
+      feedback: "युधिष्ठिर ने कहा — 'तुम क्षत्रिय हो, इस तरह छुपना धर्म नहीं।' दुर्योधन निकले और भीम से गदा युद्ध हुआ।"
+    },
+    {
+      shloka: "कृष्णः — जरा व्याधेन हतः।",
+      story: "महाभारत के 36 वर्ष बाद <strong>कृष्ण</strong> ने प्रभास में ध्यान लगाया। एक शिकारी ने उन्हें हिरण समझकर बाण चलाया।",
+      question: "कृष्ण ने शिकारी को सजा क्यों नहीं दी?",
+      choices: [
+        { text: "ध्यान में थे", correct: false },
+        { text: "गांधारी के शाप की पूर्ति थी — और त्रेतायुग में बाली-वध का कर्म-फल", correct: true },
+        { text: "उन्हें गुस्सा नहीं आया", correct: false },
+        { text: "शिकारी भाग गया", correct: false }
+      ],
+      feedback: "कृष्ण ने कहा — 'यह गांधारी का शाप और मेरे कर्म का फल है।' त्रेतायुग में राम रूप में बाली को पेड़ के पीछे से मारा था।"
+    }
+  ]
+}
+]; // end chapters
+
+// =========================================================
+// STATE
+// =========================================================
+let currentChapter = null;
+let currentQuestionIndex = 0;
+let currentScore = 0;
+let totalScore = parseInt(localStorage.getItem('mb_total_score') || '0');
+let completedChapters = JSON.parse(localStorage.getItem('mb_completed') || '[]');
+let answered = false;
+
+// =========================================================
+// SCREENS
+// =========================================================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).style.display = '';
+  document.getElementById(id).classList.add('active');
+}
+
+function showChapterSelect() {
+  renderChapters();
+  showScreen('chapter-screen');
+}
+
+function renderChapters() {
+  const grid = document.getElementById('chapters-grid');
+  grid.innerHTML = chapters.map(ch => {
+    const isCompleted = completedChapters.includes(ch.id);
+    return `
+      <div class="chapter-card ${isCompleted ? 'completed' : ''}" onclick="startChapter(${ch.id})">
+        <div class="chapter-num">पर्व ${ch.id + 1}</div>
+        <span class="chapter-emoji">${ch.emoji}</span>
+        <div class="chapter-name">${ch.name}</div>
+        <div class="chapter-hindi">${ch.hindi}</div>
+        <div class="chapter-desc">${ch.desc}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+// =========================================================
+// GAME LOGIC
+// startChapter: randomly picks 15 from 25-question pool
+// EVERY time you play — different 15 questions!
+// =========================================================
+function startChapter(id) {
+  const orig = chapters[id];
+
+  // Step 1: Shuffle the full pool of 25 questions randomly
+  const poolShuffled = shuffleArr(orig.questions);
+
+  // Step 2: Pick first 15 (random selection since pool is shuffled)
+  const selected15 = poolShuffled.slice(0, 15).map(q => ({
+    ...q,
+    // Step 3: Also shuffle the 4 choices within each question
+    choices: shuffleArr(q.choices.map(c => ({ ...c })))
+  }));
+
+  currentChapter = { ...orig, questions: selected15 };
+  currentQuestionIndex = 0;
+  currentScore = 0;
+  showScreen('game-screen');
+  document.getElementById('topbar-chapter-name').textContent = currentChapter.hindi;
+  document.getElementById('total-score-display').textContent = totalScore;
+  loadQuestion();
+}
+
+function loadQuestion() {
+  const q = currentChapter.questions[currentQuestionIndex];
+  const total = currentChapter.questions.length;
+  answered = false;
+
+  document.getElementById('progress-text').textContent = `प्रश्न ${currentQuestionIndex + 1}/${total}`;
+  document.getElementById('score-text').textContent = `अंक: ${currentScore}`;
+  document.getElementById('progress-fill').style.width = `${(currentQuestionIndex / total) * 100}%`;
+
+  document.getElementById('shloka-text').textContent = q.shloka;
+  document.getElementById('story-text').innerHTML = q.story + `<br><br><strong style="color:var(--orange)">${q.question}</strong>`;
+
+  const container = document.getElementById('choices-container');
+  container.innerHTML = q.choices.map((c, i) => `
+    <button class="choice-btn" onclick="selectChoice(${i})">${c.text}</button>
+  `).join('');
+
+  document.getElementById('feedback-panel').style.display = 'none';
+  document.getElementById('next-btn').style.display = 'none';
+}
+
+function selectChoice(index) {
+  if (answered) return;
+  answered = true;
+
+  const q = currentChapter.questions[currentQuestionIndex];
+  const buttons = document.querySelectorAll('.choice-btn');
+  const isCorrect = q.choices[index].correct;
+
+  buttons.forEach((btn, i) => {
+    if (q.choices[i].correct) btn.classList.add('correct');
+    else btn.classList.add(i === index ? 'wrong' : 'disabled');
+  });
+
+  if (isCorrect) currentScore += 20;
+
+  const fb = document.getElementById('feedback-panel');
+  fb.className = `feedback-panel ${isCorrect ? 'correct-fb' : 'wrong-fb'}`;
+  fb.innerHTML = isCorrect
+    ? `<strong style="color:#2ecc71">✅ सही जवाब!</strong><br>${q.feedback}`
+    : `<strong style="color:var(--crimson-light)">❌ गलत।</strong><br>${q.feedback}`;
+  fb.style.display = 'block';
+
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.style.display = 'block';
+  const isLast = currentQuestionIndex === currentChapter.questions.length - 1;
+  nextBtn.textContent = isLast ? '📜 परिणाम देखें' : 'अगला प्रश्न →';
+}
+
+function nextQuestion() {
+  currentQuestionIndex++;
+  if (currentQuestionIndex >= currentChapter.questions.length) {
+    showResult();
+  } else {
+    loadQuestion();
+    window.scrollTo(0, 0);
+  }
+}
+
+function showResult() {
+  totalScore += currentScore;
+  localStorage.setItem('mb_total_score', totalScore);
+  if (!completedChapters.includes(currentChapter.id)) {
+    completedChapters.push(currentChapter.id);
+    localStorage.setItem('mb_completed', JSON.stringify(completedChapters));
+  }
+
+  const max = currentChapter.questions.length * 20;
+  const pct = Math.round((currentScore / max) * 100);
+
+  let emoji, title, msg;
+  if (pct === 100) {
+    emoji = '🏆'; title = 'युधिष्ठिर तुल्य!';
+    msg = `वाह! सभी ${max/20} प्रश्न सही! आप महाभारत के सच्चे ज्ञाता हैं। 🙏`;
+  } else if (pct >= 60) {
+    emoji = '⚔️'; title = 'अर्जुन की भाँति!';
+    msg = `बढ़िया! ${currentScore}/${max} अंक। अभी और 10 प्रश्नों का नया सेट खेलें!`;
+  } else {
+    emoji = '📖'; title = 'और अभ्यास करें';
+    msg = `'अभ्यासयोगेन ततो मामिच्छाप्तुं धनञ्जय' — अभ्यास से ज्ञान मिलता है। फिर खेलें — नए प्रश्न आएंगे!`;
+  }
+
+  document.getElementById('result-emoji').textContent = emoji;
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-score').textContent = `${currentScore}/${max}`;
+  document.getElementById('result-message').textContent = msg;
+  showScreen('result-screen');
+}
+
+function retryChapter() { startChapter(currentChapter.id); }
+function confirmBack() {
+  if (confirm('क्या आप पर्व छोड़ना चाहते हैं?')) showChapterSelect();
+}
+</script>
+</body>
+</html>
